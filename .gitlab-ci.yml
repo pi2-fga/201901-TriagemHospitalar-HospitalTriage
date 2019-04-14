@@ -4,7 +4,8 @@ services:
   - docker:dind
 
 stages:
-  - push image
+  - test
+  - deploy
 
 before_script:
   - docker info
@@ -12,8 +13,12 @@ before_script:
   - pip install --quiet docker-compose==1.23.2
   - docker login registry.gitlab.com --username gitlab-ci-token --password $CI_BUILD_TOKEN
 
-push master image:
-  stage: push image
+test:
+  stage: test
+  script: echo "Running tests"
+
+deploy production:
+  stage: deploy
   variables:
     IMAGE_TAG: master
   script:
