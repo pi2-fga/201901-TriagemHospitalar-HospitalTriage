@@ -1,0 +1,7 @@
+version: '3.6'
+
+services:
+  triage:
+    image: registry.gitlab.com/hospital-triage-station/applications/triage:${IMAGE_TAG}
+    build:
+      context: ./

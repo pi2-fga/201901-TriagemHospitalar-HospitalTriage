@@ -1,0 +1,31 @@
+image: docker:stable
+
+services:
+  - docker:dind
+
+stages:
+  - push image
+
+before_script:
+  - docker info
+  - apk add --quiet --no-cache py-pip
+  - pip install --quiet docker-compose==1.23.2
+  - docker login registry.gitlab.com --username gitlab-ci-token --password $CI_BUILD_TOKEN
+
+push master image:
+  stage: push image
+  variables:
+    IMAGE_TAG: master
+  script:
+    - docker-compose -f docker-compose.production.yml pull
+    - docker-compose -f docker-compose.production.yml build
+    - docker-compose -f docker-compose.production.yml push
+  environment:
+    name: production
+  only:
+    - /^master$/
+  except:
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /skip-deploy/
+  tags:
+    - docker
