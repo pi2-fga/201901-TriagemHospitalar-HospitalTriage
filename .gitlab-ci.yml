@@ -5,22 +5,43 @@ services:
 
 stages:
   - test
+  - push
   - deploy
 
 before_script:
   - docker info
-  - apk add --quiet --no-cache py-pip
-  - pip install --quiet docker-compose==1.23.2
-  - docker login registry.gitlab.com --username gitlab-ci-token --password $CI_BUILD_TOKEN
+  - apk update
 
 test:
   stage: test
   script: echo "Running tests"
 
+push to github:
+  stage: push
+  before_script:
+    - apk add --quiet --no-cache git
+    - 'which ssh-agent || ( apk add openssh-client )'
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+    - git config --global user.name "$GITLAB_USER_ID"
+    - git config --global user.email "$GITLAB_USER_EMAIL"
+    - git remote set-url origin git@github.com:pi2-fga/201901-TriagemHospitalar-Triage.git
+  script:
+    - git checkout $CI_COMMIT_REF_NAME
+    - git push origin $CI_COMMIT_REF_NAME --force
+
 deploy production:
   stage: deploy
   variables:
     IMAGE_TAG: master
+  before_script:
+    - apk add --quiet --no-cache py-pip
+    - pip install --quiet docker-compose==1.23.2
+    - docker login registry.gitlab.com --username gitlab-ci-token --password $CI_BUILD_TOKEN
   script:
     - docker-compose -f docker-compose.production.yml pull
     - docker-compose -f docker-compose.production.yml build
