@@ -1,7 +1,7 @@
 version: '3.7'
 
 services:
-  triage:
-    image: registry.gitlab.com/hospital-triage-station/applications/triage:${IMAGE_TAG}
+  hospital-triage:
+    image: registry.gitlab.com/hospital-triage-station/applications/hospital-triage:${IMAGE_TAG}
     build:
       context: ./
