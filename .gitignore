@@ -1,6 +1,7 @@
 # Custom
 db.sqlite3
 .vscode/
+*/migrations/*.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
