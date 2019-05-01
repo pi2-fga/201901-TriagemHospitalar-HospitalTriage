@@ -29,7 +29,7 @@ push to github:
     - chmod 644 ~/.ssh/known_hosts
     - git config --global user.name "$GITLAB_USER_ID"
     - git config --global user.email "$GITLAB_USER_EMAIL"
-    - git remote set-url origin git@github.com:pi2-fga/201901-TriagemHospitalar-Triage.git
+    - git remote set-url origin git@github.com:pi2-fga/201901-TriagemHospitalar-HospitalTriage.git
   script:
     - git checkout $CI_COMMIT_REF_NAME
     - git push origin $CI_COMMIT_REF_NAME --force
