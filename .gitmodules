@@ -1,0 +1,3 @@
+[submodule "voice-recognition-middleware"]
+	path = voice-recognition-middleware
+	url = https://gitlab.com/hospital-triage-station/services/voice-recognition-middleware
