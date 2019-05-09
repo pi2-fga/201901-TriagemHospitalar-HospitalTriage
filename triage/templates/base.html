@@ -1,0 +1,14 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+  {% block css %}
+    <link rel="stylesheet" href="{% static 'css/core.css' %}">
+  {% endblock %}
+
+  <div class="header">
+    <a class="logo">Nome do Hospital</a>
+  </div>
+
+  {% block content %}
+  {% endblock %}
+</html>
