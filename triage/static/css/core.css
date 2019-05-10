@@ -36,6 +36,16 @@ body {
 .header-right {
   float: right;
 }
+.btn-lg{
+  font-size: 50px;
+}
+.btn-primary{
+  background-color: #1D3194;
+}
+
+.next-button{
+  float: right;
+}
 
 @media screen and (max-width: 500px) {
   .header a {
