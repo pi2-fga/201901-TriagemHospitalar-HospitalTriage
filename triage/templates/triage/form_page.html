@@ -3,5 +3,40 @@
 {% block title %}Renderizar nome da pergunta{% endblock %}
 
 {% block content %}
-  {{ form.as_p }}
+
+  <form>
+    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+      <label class="btn btn-secondary">
+        <input type="radio" name="options" id="option1" autocomplete="off" > 1
+      </label>
+      <label class="btn btn-secondary">
+        <input type="radio" name="options" id="option2" autocomplete="off"> 2
+      </label>
+      <label class="btn btn-secondary">
+        <input type="radio" name="options" id="option3" autocomplete="off"> 3
+      </label>
+      <label class="btn btn-secondary">
+        <input type="radio" name="options" id="option4" autocomplete="off"> 4
+      </label>
+      <label class="btn btn-secondary">
+        <input type="radio" name="options" id="option5" autocomplete="off"> 5
+      </label>
+      <label class="btn btn-secondary">
+        <input type="radio" name="options" id="option6" autocomplete="off" > 6
+      </label>
+      <label class="btn btn-secondary">
+        <input type="radio" name="options" id="option7" autocomplete="off"> 7
+      </label>
+      <label class="btn btn-secondary">
+        <input type="radio" name="options" id="option8" autocomplete="off"> 8
+      </label>
+      <label class="btn btn-secondary">
+        <input type="radio" name="options" id="option9" autocomplete="off"> 9
+      </label>
+      <label class="btn btn-secondary">
+        <input type="radio" name="options" id="option10" autocomplete="off"> 10
+      </label>
+  </div>
+
+  </form>
 {% endblock %}
