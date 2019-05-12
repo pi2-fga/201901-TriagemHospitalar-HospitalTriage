@@ -37,14 +37,18 @@ body {
   float: right;
 }
 .btn-lg{
-  font-size: 50px;
+  font-size: var(--large-font);
 }
 .btn-primary{
-  background-color: #1D3194;
+  background-color: var(--primary-color);
 }
 
 .next-button{
-  float: right;
+  position:absolute;
+  bottom:0;
+  right:0;
+  margin-right: var(--min-margin);
+  margin-bottom: var(--min-margin);
 }
 
 @media screen and (max-width: 500px) {

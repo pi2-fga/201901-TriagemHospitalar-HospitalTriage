@@ -1,13 +1,15 @@
+{% extends 'base.html' %}
+{% load static %}
 
-{{ stereotype_list_static(stereotypes, conversation_title,title, subtitle) }}
+ {% block title %}{{title}}{% endblock %}
 
-{% macro image_instructions(stereotypes, conversation_title,
-                           title='Bem vindp',
-                           subtitle='Crie, delete e edite aqui os esteriótipos da conversa ',
-                           javascript_enabled='') %}
-
-    <div class="StereotypeList">
-
-    </div>
-
-{% endmacro %}
+ {% block content %}
+ <div class="wrapper">
+     <div class="content">
+         <h2>{{text}}</h2>
+         <img src={% static 'img/test.gif' %}>
+     </div>
+   </div>
+   <a class="btn btn-primary btn-lg next-button" href={{url}}>Próxima</a>
+ </div>
+ {% endblock %}
