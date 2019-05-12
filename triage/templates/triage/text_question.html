@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% load static %}
+
+ {% block title %}{{title}}{% endblock %}
+
+ {% block content %}
+ <div class="wrapper">
+         <h2>{{text}}</h2>
+         <form method="POST" class="post-form">
+           {% csrf_token %}
+           <div class="content">
+             <h2>{{ form.subject.label }}</h2>
+             {{ form.subject }}
+             <button class="btn btn-primary btn-icon"><i class="fas fa-microphone-alt"></i></button>
+         </div>
+            <button type="submit" class="btn btn-primary btn-lg next-button">Próxima</button>
+       </form>
+ </div>
+ {% endblock %}

@@ -7,7 +7,7 @@
   <form method="post" name="scale-form">
     {% csrf_token %}
     <div class="content">
-      <h2 style="color: var(--gray-text);">Pressione um número de 0 a 10 que representa a intensidade da dor que você está sentindo</h2>
+      <h2>Pressione um número de 0 a 10 que representa a intensidade da dor que você está sentindo</h2>
       <div class="btn-group btn-group-toggle" data-toggle="buttons">
         <label class="btn btn-secondary btn-lg" style="background-color: white; color: #5A6978;">
           <input type="radio" name="options" value="1" autocomplete="off" > 1
@@ -36,7 +36,7 @@
         <label class="btn btn-secondary btn-lg" style="background-color: #33459E;">
           <input type="radio" name="options"  value="9" autocomplete="off"> 9
         </label>
-        <label class="btn btn-secondary btn-lg" style="background-color: var(--primary-color);">
+        <label class="btn btn-secondary btn-lg" style="background-color: var(--primary);">
           <input type="radio" name="options"  value="10" autocomplete="off"> 10
         </label>
     </div>

@@ -1,0 +1,16 @@
+
+#id_subject {
+    height: 200px;
+    width: 500px;
+    margin: 0;
+    font-size:  var(--large-font);
+}
+
+.btn-icon{
+    margin:0;
+    margin-bottom: 20px;    
+}
+
+h2 {
+  color: var(--gray-text);
+}

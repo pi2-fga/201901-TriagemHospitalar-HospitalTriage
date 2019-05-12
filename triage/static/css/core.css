@@ -36,11 +36,9 @@ body {
 .header-right {
   float: right;
 }
+
 .btn-lg{
-  font-size: var(--large-font);
-}
-.btn-primary{
-  background-color: var(--primary-color);
+  font-size: 50px;
 }
 
 .next-button{
@@ -49,6 +47,12 @@ body {
   right:0;
   margin-right: var(--min-margin);
   margin-bottom: var(--min-margin);
+
+}
+
+.btn-primary, .btn-lg, .next-button {
+  background-color: var(--primary);
+
 }
 
 @media screen and (max-width: 500px) {

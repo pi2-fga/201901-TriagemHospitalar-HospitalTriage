@@ -18,7 +18,7 @@
   --white: #fff;
   --gray: #6c757d;
   --gray-dark: #343a40;
-  --primary: #007bff;
+  --primary: #1D3194;
   --secondary: #6c757d;
   --success: #28a745;
   --info: #17a2b8;
@@ -2334,7 +2334,7 @@ fieldset:disabled a.btn {
 
 .btn-primary {
   color: #fff;
-  background-color: #007bff;
+  background-color: var(--primary);
   border-color: #007bff;
 }
 
@@ -2902,7 +2902,7 @@ fieldset:disabled a.btn {
 
 .btn-lg, .btn-group-lg > .btn {
   padding: 0.5rem 1rem;
-  font-size: 1.25rem;
+  font-size: var(--large-font);
   line-height: 1.5;
   border-radius: 0.3rem;
 }
