@@ -7,6 +7,8 @@ services:
         # - data:/var/lib/postgresql/data:rw
         - ./scripts/db:/docker-entrypoint-initdb.d:rw
   hospital-triage:
+    env_file:
+      - ./etc/env/bot.env
     build: .
     command: bash -c "chmod +x scripts/run/dev.sh && ./scripts/run/dev.sh"
     volumes:

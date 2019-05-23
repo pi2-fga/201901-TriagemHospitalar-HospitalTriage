@@ -61,7 +61,7 @@ coverage.xml
 *.pot
 
 # Django stuff:
-static/
+static/admin/
 *.log
 local_settings.py
 db.sqlite3
