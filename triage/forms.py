@@ -1,4 +1,5 @@
 from django import forms
+from django.utils.translation import ugettext_lazy as _
 
 
 class TextForm(forms.Form):
@@ -6,5 +7,9 @@ class TextForm(forms.Form):
                               widget=forms.Textarea)
 
 
+BOOL_CHOICES = ((_('Sim'), _('Sim')), (_('Não'), _('Não')))
+
+
 class BooleanForm(forms.Form):
-    boolean = forms.BooleanField(required=True)
+    boolean = forms.ChoiceField(required=True, choices=BOOL_CHOICES,
+                                widget=forms.RadioSelect)

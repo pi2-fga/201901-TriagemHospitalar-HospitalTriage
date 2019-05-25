@@ -72,7 +72,7 @@ def boolean_question(request, triage):
         form = BooleanForm(request.POST)
         if form.is_valid():
             answer = form.cleaned_data['boolean']
-            next_question = make_bot_request(str(answer), triage)
+            next_question = make_bot_request(answer, triage)
             return redirect_by_type(next_question, triage)
     form.fields['boolean'].label = triage.next_question
     return render(request, 'triage/boolean_question.html', {'form': form})

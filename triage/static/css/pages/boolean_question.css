@@ -1,0 +1,12 @@
+#id_boolean {
+  list-style: none;
+}
+
+#id_boolean li{
+  display: inline;
+  padding-right: 100px;
+}
+
+.content{
+  font-size:  var(--large-font);
+}
