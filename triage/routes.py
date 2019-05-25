@@ -41,10 +41,11 @@ def gif_page(request, triage):
 @urlpatterns.route('scale/' + triage_url)
 def scale_page(request, triage):
     error = None
+
     if request.method == "POST" and 'options' in request.POST:
-        # value = request.POST['options']
-        # TODO: IMPLEMENT SENDING INFORMATION TO BOT
-        pass
+        value = request.POST['options']
+        next_question = make_bot_request(value, triage)
+        return redirect_by_type(next_question, triage)
     elif request.method == "POST":
         error = _('Você precisa escolher uma opção')
     return render(request, 'triage/pain_scale.html', {'errors': error})
@@ -53,6 +54,13 @@ def scale_page(request, triage):
 @urlpatterns.route('text/' + triage_url)
 def text_question(request, triage):
     form = TextForm()
+    if request.method == "POST":
+        form = TextForm(request.POST)
+        if form.is_valid():
+            data = request.POST.copy()
+            answer = data.get('subject')
+            next_question = make_bot_request(answer, triage)
+            return redirect_by_type(next_question, triage)
     form.fields['subject'].label = triage.next_question
     return render(request, 'triage/text_question.html', {'form': form})
 
@@ -60,6 +68,12 @@ def text_question(request, triage):
 @urlpatterns.route('boolean/' + triage_url)
 def boolean_question(request, triage):
     form = BooleanForm()
+    if request.method == "POST":
+        form = BooleanForm(request.POST)
+        if form.is_valid():
+            answer = form.cleaned_data['boolean']
+            next_question = make_bot_request(str(answer), triage)
+            return redirect_by_type(next_question, triage)
     form.fields['boolean'].label = triage.next_question
     return render(request, 'triage/boolean_question.html', {'form': form})
 
@@ -118,7 +132,7 @@ def first_questions_flow(previous_question, answer, triage):
 
         triage.save()
         if number_previous == 1:
-            next_question = make_bot_request(answer)
+            next_question = make_bot_request(answer, triage)
             if next_question['type'] == 'risk':
                 triage.risk_level = next_question['content']
                 triage.save()
