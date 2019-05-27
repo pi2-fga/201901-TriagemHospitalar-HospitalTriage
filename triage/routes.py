@@ -1,8 +1,9 @@
+from boogie.router import Router
 from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import render, redirect
-from boogie.router import Router
+from django.core import serializers
 from triage.forms import TextForm, BooleanForm
-from .utils import make_bot_request
+from .utils import send_bot_request, send_triage_to_patient_management_app
 from .models import Triage
 urlpatterns = Router(
     models={
@@ -44,7 +45,7 @@ def scale_page(request, triage):
 
     if request.method == "POST" and 'options' in request.POST:
         value = request.POST['options']
-        next_question = make_bot_request(value, triage)
+        next_question = send_bot_request(value, triage)
         return redirect_by_type(next_question, triage)
     elif request.method == "POST":
         error = _('Você precisa escolher uma opção')
@@ -59,7 +60,7 @@ def text_question(request, triage):
         if form.is_valid():
             data = request.POST.copy()
             answer = data.get('subject')
-            next_question = make_bot_request(answer, triage)
+            next_question = send_bot_request(answer, triage)
             return redirect_by_type(next_question, triage)
     form.fields['subject'].label = triage.next_question
     return render(request, 'triage/text_question.html', {'form': form})
@@ -72,7 +73,7 @@ def boolean_question(request, triage):
         form = BooleanForm(request.POST)
         if form.is_valid():
             answer = form.cleaned_data['boolean']
-            next_question = make_bot_request(answer, triage)
+            next_question = send_bot_request(answer, triage)
             return redirect_by_type(next_question, triage)
     form.fields['boolean'].label = triage.next_question
     return render(request, 'triage/boolean_question.html', {'form': form})
@@ -81,6 +82,14 @@ def boolean_question(request, triage):
 @urlpatterns.route('risk/' + triage_url)
 def pacient_risk(request, triage):
     # TODO: send to patient management triage object
+    # assuming obj is a model instance
+    serialized_obj = serializers.serialize('json', [triage, ])
+    response = send_triage_to_patient_management_app(serialized_obj)
+    if response.status_code == 200:
+        print('top')
+    else:
+        print('ooops')
+        print(response)
     return render(request, 'triage/risk_level.html',
                   {'risk_color': triage.risk_level})
 

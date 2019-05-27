@@ -1,8 +1,13 @@
 import json
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from boogie.rest import rest_api
 
 
+@rest_api(['name', 'age', 'body_temperature', 'body_mass', 'blood_glucose',
+           'blood_pressure', 'blood_oxygen_level', 'alergies',
+           'continuos_medication', 'previous_diagnosis', 'height',
+           'risk_level'])
 class Triage(models.Model):
     RED = 0
     YELLOW = 1

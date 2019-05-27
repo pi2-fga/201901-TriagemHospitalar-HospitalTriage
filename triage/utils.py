@@ -6,7 +6,23 @@ import json
 HEADERS = {'content-type': 'application/json'}
 
 
-def make_bot_request(message, triage):
+def send_triage_to_patient_management_app(triage):
+    """
+    Sends a triage object in json format to be saved in
+    patient management app database
+    """
+    post_url = os.environ.get("PATIENT_HOST", "")
+    params = {
+        "triage": triage,
+    }
+    request = requests.post(post_url, data=json.dumps(params), headers=HEADERS)
+    return request
+
+
+def send_bot_request(message, triage):
+    """
+    Sends bot app a message
+    """
     post_url = os.environ.get("BOT_HOST", "")
 
     params = {
@@ -18,6 +34,9 @@ def make_bot_request(message, triage):
 
 
 def get_bot_category(response, triage):
+    """
+    Process bot message format, transforming it into a dict
+    """
     response = response.text
     if response:
         response = json.loads(response)[0]["text"]

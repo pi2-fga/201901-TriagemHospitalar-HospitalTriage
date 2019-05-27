@@ -15,8 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from boogie.rest import rest_api
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('triage/', include('triage.routes')),
+    path('', include(rest_api.urls)),
+
 ]
