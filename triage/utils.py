@@ -12,10 +12,16 @@ def send_triage_to_patient_management_app(triage):
     patient management app database
     """
     post_url = os.environ.get("PATIENT_HOST", "")
+    cookies = {'csrftoken': 'token'}
+    headers = HEADERS
+    headers['X-CSRF-TOKEN'] = 'token'
+    route = os.environ.get("TRIAGE_ROUTE", "")
     params = {
         "triage": triage,
     }
-    request = requests.post(post_url, data=json.dumps(params), headers=HEADERS)
+    request = requests.post('http://management:3000' + route,
+                            data=json.dumps(params),
+                            headers=headers, cookies=cookies)
     return request
 
 

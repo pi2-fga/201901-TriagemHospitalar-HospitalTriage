@@ -5,6 +5,8 @@ from django.core import serializers
 from triage.forms import TextForm, BooleanForm
 from .utils import send_bot_request, send_triage_to_patient_management_app
 from .models import Triage
+from .serializers import TriageSerializer
+
 urlpatterns = Router(
     models={
         'triage': Triage,
@@ -83,8 +85,9 @@ def boolean_question(request, triage):
 def pacient_risk(request, triage):
     # TODO: send to patient management triage object
     # assuming obj is a model instance
-    serialized_obj = serializers.serialize('json', [triage, ])
-    response = send_triage_to_patient_management_app(serialized_obj)
+    serialized_obj = TriageSerializer(triage)
+    # print(rest_api.serialize(triage))
+    response = send_triage_to_patient_management_app(serialized_obj.data)
     if response.status_code == 200:
         print('top')
     else:
@@ -141,7 +144,7 @@ def first_questions_flow(previous_question, answer, triage):
 
         triage.save()
         if number_previous == 1:
-            next_question = make_bot_request(answer, triage)
+            next_question = send_bot_request(answer, triage)
             if next_question['type'] == 'risk':
                 triage.risk_level = next_question['content']
                 triage.save()
