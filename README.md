@@ -24,6 +24,6 @@ estejam rodando:
 $ sudo docker network create triagenetwork
 $ sudo docker network connect triagenetwork hospitaltriage_hospital-triage_1
 $ sudo docker network connect triagenetwork triagebot_bot_1
-$ sudo docker network connect triagenetwork patientmanagement_patient-management_1
+$ sudo docker network connect triagenetwork management
 
 ```

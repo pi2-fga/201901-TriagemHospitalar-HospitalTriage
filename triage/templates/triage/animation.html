@@ -7,9 +7,12 @@
  <div class="wrapper">
      <div class="content">
          <h2>{{text}}</h2>
-         <img src={% static 'img/test.gif' %}>
+         <img src={% static animation %}>
      </div>
    </div>
-   <a class="btn btn-primary btn-lg next-button" href={{url}}>Próxima</a>
+   <form method="POST" class="post-form">
+     {% csrf_token %}
+     <button type="submit" class="btn btn-primary btn-lg next-button">Próxima</button>
+   </form>
  </div>
  {% endblock %}
