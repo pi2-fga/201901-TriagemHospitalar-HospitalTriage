@@ -38,9 +38,12 @@ def gif_page(request, triage):
     animation = map_question_animation(triage.next_question)
     info = {'title': '',
             'text': triage.next_question,
-            'url': '/triage/scale',
-            'animation': animation}
-
+            'animation': animation[0]}
+    # TODO: Change condition to integration with eletronic devices
+    if request.method == "POST":
+        anwser = 'estes são meus sinais vitais ' + str(animation[1])
+        next_question = send_bot_request(anwser, triage)
+        return redirect_by_type(next_question, triage)
     return render(request, 'triage/animation.html', info)
 
 
@@ -135,16 +138,18 @@ def redirect_by_type(next_question, triage):
     elif next_question['type'] == 'risk':
         return redirect('/triage/risk/' + str(triage.pk))
     elif next_question['type'] == 'data':
-        print('oi')
+        print(next_question['content'])
+        process_data(next_question['content'], triage)
     else:
         print('tipo não reconhecido')
         print(next_question)
 
 
 FLOW = ['Qual é o seu nome?',
-        'O que você está sentindo?'
+        'O que você está sentindo?',
+        'Você usa medicação contínua? Se sim, cite quais.'
         ]
-FLOW_ATTRIBUTE = ['name', 'main_complaint']
+FLOW_ATTRIBUTE = ['name', 'main_complaint', 'continuos_medication']
 
 
 def first_questions_flow(previous_question, answer, triage):
@@ -153,12 +158,29 @@ def first_questions_flow(previous_question, answer, triage):
 
         if number_previous == 1:
             next_question = send_bot_request(answer, triage)
-            triage.bot_next_type = next_question['type']
-            triage.bot_next_content = next_question['content']
-            triage.save()
+            if next_question['type'] == 'risk':
+                triage.risk_level = next_question['content']
+                triage.save()
+                return pacient_risk(triage)
+            else:
+                triage.bot_next_type = next_question['type']
+                triage.bot_next_content = next_question['content']
+                triage.save()
+        elif number_previous == 2:
+            next_question = {'type': triage.bot_next_type,
+                             'content': triage.bot_next_content}
             return redirect_by_type(next_question, triage)
-        else:
-            triage.next_question = FLOW[number_previous+1]
-            triage.save()
-            print(triage.next_question)
-            return redirect('/triage/text_question/' + str(triage.pk))
+        triage.next_question = FLOW[number_previous+1]
+        triage.save()
+        print(triage.next_question)
+        return redirect('/triage/text_question/' + str(triage.pk))
+
+
+def process_data(content, triage):
+    partition = content.partition(".")
+    attributes = partition[0].split()
+    it = iter(attributes)
+    for x in it:
+        setattr(triage, x, next(it))
+    triage.save()
+    return redirect_by_type(partition[1], triage)

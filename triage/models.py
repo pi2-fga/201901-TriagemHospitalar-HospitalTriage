@@ -4,7 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 from boogie.rest import rest_api
 
 
-@rest_api(['name', 'age', 'body_temperature', 'body_mass', 'blood_glucose',
+@rest_api(['name', 'age', 'body_temperature', 'body_mass',
            'blood_pressure', 'blood_oxygen_level', 'alergies',
            'continuos_medication', 'previous_diagnosis', 'height',
            'risk_level'])
@@ -22,10 +22,10 @@ class Triage(models.Model):
     name = models.CharField(max_length=500, null=True, blank=True)
     main_complaint = models.CharField(max_length=500, null=True, blank=True)
     age = models.IntegerField(null=True, blank=True)
-    body_temperature = models.FloatField(null=True, blank=True)
+    body_temperature = models.FloatField(default=36.5)
     body_mass = models.FloatField(null=True, blank=True)
-    blood_glucose = models.IntegerField(null=True, blank=True)
-    blood_pressure = models.CharField(max_length=200, null=True, blank=True)
+    blood_pressure = models.CharField(max_length=200,
+                                      default="[\"120\", \"81\"]")
     blood_oxygen_level = models.FloatField(null=True, blank=True)
     alergies = models.CharField(max_length=500, null=True, blank=True)
     continuos_medication = models.CharField(max_length=500, null=True,
@@ -33,7 +33,7 @@ class Triage(models.Model):
     previous_diagnosis = models.CharField(max_length=500,
                                           null=True,
                                           blank=True)
-    height = models.FloatField(null=True, blank=True)
+    height = models.FloatField(default=1.80)
     risk_level = models.IntegerField(
             choices=TRIAGE_RISK_CATEGORIES,
             default=RED,

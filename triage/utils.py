@@ -62,10 +62,11 @@ def get_bot_category(response, triage):
 
 
 def map_question_animation(question):
-    d = {('Posicione seus pés na marca e espere o sinal, como mostrado ',
-          'a abaixo, para medirmos seu peso e altura.'): 'img/weight.gif',
-         ('Posicione o seu braço, como mostrado abaixo, para medirmos ',
-          'seus dados vitais.'): 'img/temperature.gif',
-         ('Posicione seu braço na braçadeira, como mostrado abaixo, ',
-          'para medirmos sua pressão.'): 'img/pressure.gif'}
+    d = {'Posicione seus pés na marca e espere o sinal, como mostrado abaixo, para medirmos seu peso e altura.':
+         ['img/weight.gif', {'height': 1.80, 'body_mass': 80}],
+         'Posicione o seu braço, como mostrado abaixo, para medirmos seus dados vitais.':
+         ['img/temperature.gif', {'temperature': 38.0, 'blood_oxygen_level': 95.0}],
+         'Posicione seu braço na braçadeira, como mostrado abaixo, para medirmos sua pressão.':
+         ['img/pressure.gif', {'blood_pressure': "[\"120\", \"81\"]"}]
+         }
     return d[question]
