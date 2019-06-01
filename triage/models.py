@@ -41,6 +41,7 @@ class Triage(models.Model):
     bot_next_type = models.CharField(max_length=50, null=True, blank=True)
     bot_next_content = models.CharField(max_length=500, null=True, blank=True)
     next_question = models.CharField(max_length=500, null=True, blank=True)
+    current_type = models.CharField(max_length=500, null=True, blank=True)
 
     def set_blood_pressure(self, x):
         self.blood_pressure = json.dumps(x)
