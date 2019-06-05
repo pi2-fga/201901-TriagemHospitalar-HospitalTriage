@@ -12,10 +12,16 @@ def send_triage_to_patient_management_app(triage):
     patient management app database
     """
     post_url = os.environ.get("PATIENT_HOST", "")
+    cookies = {'csrftoken': 'token'}
+    headers = HEADERS
+    headers['X-CSRF-TOKEN'] = 'token'
+    route = os.environ.get("TRIAGE_ROUTE", "")
     params = {
         "triage": triage,
     }
-    request = requests.post(post_url, data=json.dumps(params), headers=HEADERS)
+    request = requests.post(post_url + route,
+                            data=json.dumps(params),
+                            headers=headers, cookies=cookies)
     return request
 
 
@@ -53,3 +59,14 @@ def get_bot_category(response, triage):
             'type': response_type,
             'content': content,
         }
+
+
+def map_question_animation(question):
+    d = {'Posicione seus pés na marca e espere o sinal, como mostrado abaixo, para medirmos seu peso e altura.':
+         ['img/weight.gif', {'height': 1.80, 'body_mass': 80}],
+         'Posicione o seu braço, como mostrado abaixo, para medirmos seus dados vitais.':
+         ['img/temperature.gif', {'temperature': 38.0, 'blood_oxygen_level': 95.0}],
+         'Posicione seu braço na braçadeira, como mostrado abaixo, para medirmos sua pressão.':
+         ['img/pressure.gif', {'blood_pressure': "[\"120\", \"81\"]"}]
+         }
+    return d[question]

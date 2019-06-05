@@ -1,10 +1,12 @@
 from boogie.router import Router
 from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import render, redirect
-from django.core import serializers
 from triage.forms import TextForm, BooleanForm
-from .utils import send_bot_request, send_triage_to_patient_management_app
+from .utils import (send_bot_request, send_triage_to_patient_management_app,
+                    map_question_animation)
 from .models import Triage
+from .serializers import TriageSerializer
+
 urlpatterns = Router(
     models={
         'triage': Triage,
@@ -33,9 +35,15 @@ def welcome_page(request):
 
 @urlpatterns.route('animation/' + triage_url)
 def gif_page(request, triage):
+    animation = map_question_animation(triage.next_question)
     info = {'title': '',
-            'text': 'Posicione seus pés na marca e clique em iniciar.',
-            'url': '/triage/scale'}
+            'text': triage.next_question,
+            'animation': animation[0]}
+    # TODO: Change condition to integration with eletronic devices
+    if request.method == "POST":
+        anwser = 'estes são meus sinais vitais ' + str(animation[1])
+        next_question = send_bot_request(anwser, triage)
+        return redirect_by_type(next_question, triage)
     return render(request, 'triage/animation.html', info)
 
 
@@ -59,7 +67,11 @@ def text_question(request, triage):
         form = TextForm(request.POST)
         if form.is_valid():
             data = request.POST.copy()
-            answer = data.get('subject')
+            print(triage.current_type)
+            if triage.bot_next_type == 'textr':
+                answer = triage.next_question + ' ' + data.get('subject')
+            else:
+                answer = data.get('subject')
             next_question = send_bot_request(answer, triage)
             return redirect_by_type(next_question, triage)
     form.fields['subject'].label = triage.next_question
@@ -83,8 +95,9 @@ def boolean_question(request, triage):
 def pacient_risk(request, triage):
     # TODO: send to patient management triage object
     # assuming obj is a model instance
-    serialized_obj = serializers.serialize('json', [triage, ])
-    response = send_triage_to_patient_management_app(serialized_obj)
+    serialized_obj = TriageSerializer(triage)
+    # print(rest_api.serialize(triage))
+    response = send_triage_to_patient_management_app(serialized_obj.data)
     if response.status_code == 200:
         print('top')
     else:
@@ -96,7 +109,6 @@ def pacient_risk(request, triage):
 
 @urlpatterns.route('text_question/' + triage_url)
 def first_questions(request, triage):
-    print(triage.next_question)
     form = TextForm()
     form.fields['subject'].label = triage.next_question
     if request.method == "POST":
@@ -110,10 +122,14 @@ def first_questions(request, triage):
 
 def redirect_by_type(next_question, triage):
     triage.next_question = next_question['content']
+    triage.current_type = next_question['type']
     triage.save()
+    print(next_question['type'])
     if next_question['type'] == 'yes_or_no':
         return redirect('/triage/boolean/' + str(triage.pk))
     elif next_question['type'] == 'text':
+        return redirect('/triage/text/' + str(triage.pk))
+    elif next_question['type'] == 'textr':
         return redirect('/triage/text/' + str(triage.pk))
     elif next_question['type'] == 'pain_scale':
         return redirect('/triage/scale/' + str(triage.pk))
@@ -121,6 +137,9 @@ def redirect_by_type(next_question, triage):
         return redirect('/triage/animation/' + str(triage.pk))
     elif next_question['type'] == 'risk':
         return redirect('/triage/risk/' + str(triage.pk))
+    elif next_question['type'] == 'data':
+        print(next_question['content'])
+        process_data(next_question['content'], triage)
     else:
         print('tipo não reconhecido')
         print(next_question)
@@ -128,20 +147,17 @@ def redirect_by_type(next_question, triage):
 
 FLOW = ['Qual é o seu nome?',
         'O que você está sentindo?',
-        'Qual é a sua idade?',
-        'Caso você use medicação contínua, cite quais são os remédios.',
-        'Você possui alergia a alguma medicação?']
-FLOW_ATTRIBUTE = ['name', 'main_complaint', 'age', 'continuos_medication',
-                  'alergies']
+        'Você usa medicação contínua? Se sim, cite quais.'
+        ]
+FLOW_ATTRIBUTE = ['name', 'main_complaint', 'continuos_medication']
 
 
 def first_questions_flow(previous_question, answer, triage):
         number_previous = FLOW.index(previous_question)
         setattr(triage, FLOW_ATTRIBUTE[number_previous], answer)
 
-        triage.save()
         if number_previous == 1:
-            next_question = make_bot_request(answer, triage)
+            next_question = send_bot_request(answer, triage)
             if next_question['type'] == 'risk':
                 triage.risk_level = next_question['content']
                 triage.save()
@@ -150,7 +166,7 @@ def first_questions_flow(previous_question, answer, triage):
                 triage.bot_next_type = next_question['type']
                 triage.bot_next_content = next_question['content']
                 triage.save()
-        elif number_previous == 4:
+        elif number_previous == 2:
             next_question = {'type': triage.bot_next_type,
                              'content': triage.bot_next_content}
             return redirect_by_type(next_question, triage)
@@ -158,3 +174,13 @@ def first_questions_flow(previous_question, answer, triage):
         triage.save()
         print(triage.next_question)
         return redirect('/triage/text_question/' + str(triage.pk))
+
+
+def process_data(content, triage):
+    partition = content.partition(".")
+    attributes = partition[0].split()
+    it = iter(attributes)
+    for x in it:
+        setattr(triage, x, next(it))
+    triage.save()
+    return redirect_by_type(partition[1], triage)
