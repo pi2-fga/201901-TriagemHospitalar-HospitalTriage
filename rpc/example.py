@@ -6,6 +6,6 @@ from rpc_client import RpcClient
 
 rpc = RpcClient()
 
-print("[x] Requesting temperature")
-response = rpc.call('temperature')
+print("[x] Requesting altura")
+response = rpc.call('altura')
 print("[x] Got {response}".format(response=response))

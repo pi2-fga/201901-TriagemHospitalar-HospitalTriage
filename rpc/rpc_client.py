@@ -49,4 +49,4 @@ class RpcClient(object):
         while self.response is None:
             self.connection.process_data_events()
 
-        return int(self.response)
+        return self.response
