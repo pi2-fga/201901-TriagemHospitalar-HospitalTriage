@@ -165,9 +165,10 @@ def first_questions_flow(previous_question, answer, triage):
         if number_previous == 1:
             next_question = send_bot_request(answer, triage)
             if next_question['type'] == 'risk':
-                triage.risk_level = next_question['content']
+                choice = TRIAGE_RISK_CATEGORIES[next_question['content']]
+                triage.risk_level = choice
                 triage.save()
-                return pacient_risk(triage)
+                return redirect('/triage/risk/' + str(triage.pk))
             else:
                 triage.bot_next_type = next_question['type']
                 triage.bot_next_content = next_question['content']
