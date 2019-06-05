@@ -3,9 +3,11 @@ from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import render, redirect
 from triage.forms import TextForm, BooleanForm
 from .utils import (send_bot_request, send_triage_to_patient_management_app,
-                    map_question_animation)
+                    map_question_animation, save_values)
 from .models import Triage
 from .serializers import TriageSerializer
+from .utils import TRIAGE_RISK_CATEGORIES
+
 
 urlpatterns = Router(
     models={
@@ -42,6 +44,8 @@ def gif_page(request, triage):
     # TODO: Change condition to integration with eletronic devices
     if request.method == "POST":
         anwser = 'estes são meus sinais vitais ' + str(animation[1])
+        save_values(triage, animation[1])
+        print(anwser)
         next_question = send_bot_request(anwser, triage)
         return redirect_by_type(next_question, triage)
     return render(request, 'triage/animation.html', info)
@@ -93,18 +97,16 @@ def boolean_question(request, triage):
 
 @urlpatterns.route('risk/' + triage_url)
 def pacient_risk(request, triage):
-    # TODO: send to patient management triage object
-    # assuming obj is a model instance
     serialized_obj = TriageSerializer(triage)
-    # print(rest_api.serialize(triage))
     response = send_triage_to_patient_management_app(serialized_obj.data)
     if response.status_code == 200:
         print('top')
     else:
         print('ooops')
         print(response)
+    color = Triage.TRIAGE_RISK_CATEGORIES[triage.risk_level][1]
     return render(request, 'triage/risk_level.html',
-                  {'risk_color': triage.risk_level})
+                  {'risk_color': color})
 
 
 @urlpatterns.route('text_question/' + triage_url)
@@ -136,10 +138,14 @@ def redirect_by_type(next_question, triage):
     elif next_question['type'] == 'info':
         return redirect('/triage/animation/' + str(triage.pk))
     elif next_question['type'] == 'risk':
+        choice = TRIAGE_RISK_CATEGORIES[next_question['content']]
+        triage.risk_level = choice
+        triage.save()
         return redirect('/triage/risk/' + str(triage.pk))
     elif next_question['type'] == 'data':
-        print(next_question['content'])
-        process_data(next_question['content'], triage)
+        answer = process_data(next_question['content'], triage)
+        next_question = send_bot_request(answer, triage)
+        return redirect_by_type(next_question, triage)
     else:
         print('tipo não reconhecido')
         print(next_question)
@@ -183,4 +189,4 @@ def process_data(content, triage):
     for x in it:
         setattr(triage, x, next(it))
     triage.save()
-    return redirect_by_type(partition[1], triage)
+    return "Os dados foram salvos com sucesso na aplicação da estação da triagem."

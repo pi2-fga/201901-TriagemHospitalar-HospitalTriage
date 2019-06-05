@@ -1,9 +1,17 @@
 import os
 import requests
 import json
+from django.utils.translation import ugettext_lazy as _
 
 
 HEADERS = {'content-type': 'application/json'}
+TRIAGE_RISK_CATEGORIES = {
+    _('red'): 0,
+    _('yellow'): 1,
+    _('green'): 2,
+    _('blue'): 3,
+
+}
 
 
 def send_triage_to_patient_management_app(triage):
@@ -65,8 +73,14 @@ def map_question_animation(question):
     d = {'Posicione seus pés na marca e espere o sinal, como mostrado abaixo, para medirmos seu peso e altura.':
          ['img/weight.gif', {'height': 1.80, 'body_mass': 80}],
          'Posicione o seu braço, como mostrado abaixo, para medirmos seus dados vitais.':
-         ['img/temperature.gif', {'temperature': 38.0, 'blood_oxygen_level': 95.0}],
+         ['img/temperature.gif', {'body_temperature': 38.0, 'blood_oxygen_level': 95.0}],
          'Posicione seu braço na braçadeira, como mostrado abaixo, para medirmos sua pressão.':
-         ['img/pressure.gif', {'blood_pressure': "[\"120\", \"81\"]"}]
+         ['img/pressure.gif', {'blood_pressure': "[\"120\", \"81\"]"}],
          }
     return d[question]
+
+
+def save_values(triage, values):
+    for key in values.keys():
+        setattr(triage, key, values[key])
+    triage.save()
