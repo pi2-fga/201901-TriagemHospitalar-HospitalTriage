@@ -17,6 +17,7 @@ services:
       - DB_PASSWORD=password
       - DB_HOST=hospital-triage-db
       - DB_PORT=5432
+      - PROD=0
     volumes:
       - .:/code
     ports:
