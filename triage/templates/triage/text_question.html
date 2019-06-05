@@ -4,6 +4,12 @@
  {% block title %}{{title}}{% endblock %}
 
  {% block content %}
+
+<script>
+  setExpectedAnswers(['general']);
+  setIndTranscribeTextAnswer(true);
+</script>
+
  <div class="wrapper">
          <h2>{{text}}</h2>
          <form method="POST" class="post-form">
@@ -13,7 +19,7 @@
              {{ form.subject }}
              <button class="btn btn-primary btn-icon"><i class="fas fa-microphone-alt"></i></button>
          </div>
-            <button type="submit" class="btn btn-primary btn-lg next-button">Próxima</button>
+         <button id="btn_next" type="submit" class="btn btn-primary btn-lg next-button">Próxima</button>
        </form>
  </div>
  {% endblock %}

@@ -3,48 +3,54 @@
 {% block title %}Renderizar nome da pergunta{% endblock %}
 
 {% block content %}
+
+<script>
+  setExpectedAnswers(['pain_scale','general']);
+  setIndTranscribeTextAnswer(false);
+</script>
+
 <div class="wrapper">
   <form method="post" name="scale-form">
     {% csrf_token %}
     <div class="content">
-      <h2>Pressione um número de 0 a 10 que representa a intensidade da dor que você está sentindo</h2>
+      <h2>Pressione um número de 1 a 10 que representa a intensidade da dor que você está sentindo</h2>
       {% if erro %}
         {{ erro }}
       {% endif %}
       <div class="btn-group btn-group-toggle" data-toggle="buttons">
         <label class="btn btn-secondary btn-lg" style="background-color: white; color: #5A6978;">
-          <input type="radio" name="options" value="um" autocomplete="off" > 1
+          <input type="radio" name="options" id="pain_option_1" value="um" autocomplete="off" > 1
         </label>
         <label class="btn btn-secondary btn-lg" style="background-color: #D1D5E9; color: #5A6978;">
-          <input type="radio" name="options" value="dois" autocomplete="off"> 2
+          <input type="radio" name="options" id="pain_option_2" value="dois" autocomplete="off"> 2
         </label>
         <label class="btn btn-secondary btn-lg " style="background-color: #BBC1DE; color: #5A6978;">
-          <input type="radio" name="options" value="três" autocomplete="off"> 3
+          <input type="radio" name="options" id="pain_option_3" value="três" autocomplete="off"> 3
         </label>
         <label class="btn btn-secondary btn-lg" style="background-color: #A4ACD4; color: #5A6978;">
-          <input type="radio" name="options" value="quatro" autocomplete="off"> 4
+          <input type="radio" name="options" id="pain_option_4" value="quatro" autocomplete="off"> 4
         </label>
         <label class="btn btn-secondary btn-lg" style="background-color: #8E98C9; color: #5A6978;">
-          <input type="radio" name="options" value="cinco" autocomplete="off"> 5
+          <input type="radio" name="options" id="pain_option_5" value="cinco" autocomplete="off"> 5
         </label>
         <label class="btn btn-secondary btn-lg" style="background-color: #7783BE; color: #5A6978;">
-          <input type="radio" name="options" value="seis" autocomplete="off" > 6
+          <input type="radio" name="options" id="pain_option_6" value="seis" autocomplete="off" > 6
         </label>
         <label class="btn btn-secondary btn-lg" style="background-color: #606EB4;">
-          <input type="radio" name="options"  value="sete" autocomplete="off"> 7
+          <input type="radio" name="options" id="pain_option_7" value="sete" autocomplete="off"> 7
         </label>
         <label class="btn btn-secondary btn-lg" style="background-color: #4A5AA9;">
-          <input type="radio" name="options"  value="oito" autocomplete="off"> 8
+          <input type="radio" name="options" id="pain_option_8" value="oito" autocomplete="off"> 8
         </label>
         <label class="btn btn-secondary btn-lg" style="background-color: #33459E;">
-          <input type="radio" name="options"  value="nove" autocomplete="off"> 9
+          <input type="radio" name="options" id="pain_option_9" value="nove" autocomplete="off"> 9
         </label>
         <label class="btn btn-secondary btn-lg" style="background-color: var(--primary);">
-          <input type="radio" name="options"  value="dez" autocomplete="off"> 10
+          <input type="radio" name="options" id="pain_option_10" value="dez" autocomplete="off"> 10
         </label>
+      </div>
     </div>
-  </div>
-  <button type="submit" class="btn btn-primary btn-lg next-button">Próxima</button>
+    <button id="btn_next" type="submit" class="btn btn-primary btn-lg next-button">Próxima</button>
   </form>
 </div>
 {% endblock %}
