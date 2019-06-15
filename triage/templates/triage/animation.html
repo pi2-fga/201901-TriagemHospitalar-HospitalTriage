@@ -2,7 +2,9 @@
 {% load static %}
 
  {% block title %}{{title}}{% endblock %}
-
+ {% block javascript %}
+ <meta http-equiv="refresh" content="3;url=http://www.somewhere.com/" />
+ {% endblock %}
  {% block content %}
  <div class="wrapper">
      <div class="content">
@@ -15,4 +17,9 @@
      <button type="submit" class="btn btn-primary btn-lg next-button">Próxima</button>
    </form>
  </div>
+ <script>
+    var timer = setTimeout(function() {
+        window.location='/triage/'
+    }, 30000);
+</script>
  {% endblock %}

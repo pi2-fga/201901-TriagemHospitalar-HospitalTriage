@@ -42,6 +42,7 @@ class Triage(models.Model):
     bot_next_content = models.CharField(max_length=500, null=True, blank=True)
     next_question = models.CharField(max_length=500, null=True, blank=True)
     current_type = models.CharField(max_length=500, null=True, blank=True)
+    wheelchair = models.BooleanField(default=False)
 
     def set_blood_pressure(self, x):
         self.blood_pressure = json.dumps(x)
@@ -66,3 +67,10 @@ class Triage(models.Model):
 
     def get_previous_diagnosis(self):
         return json.loads(self.previous_diagnosis)
+
+    def get_measurements(self):
+        values = {'blood_pressure': "[\"120\", \"81\"]",
+                  'body_temperature': 38.0,
+                  'blood_oxygen_level': 95.0
+                  }
+        return 'estes são meus sinais vitais ' + str(values)

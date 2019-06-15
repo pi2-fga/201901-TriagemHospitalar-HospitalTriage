@@ -14,6 +14,40 @@ TRIAGE_RISK_CATEGORIES = {
 }
 
 
+def call_blood_pressure_measurement():
+    """
+    Calls RPC Server to measure patient blood pressure
+    """
+    return {'blood_pressure': "[\"120\", \"81\"]"}
+
+
+def call_height_mass_measurement():
+    """
+    Calls RPC Server to measure patient height and mass
+    """
+    return {'height': 1.80, 'body_mass': 80}
+
+
+def call_temperature_oxygen_measurement():
+    """
+    Calls RPC Server to measure patient height and mass
+    """
+    return {'body_temperature': 36.5, 'blood_oxygen_level': 95.0}
+
+
+MEASURES_DICT = {
+     'temperature':
+     ['Posicione o seu braço, como mostrado abaixo, para medirmos seus dados vitais.',
+      'img/temperature.gif', call_temperature_oxygen_measurement],
+     'pressure':
+     ['Posicione seu braço na braçadeira, como mostrado abaixo, para medirmos sua pressão.',
+      'img/pressure.gif', call_blood_pressure_measurement],
+     'body_mass':
+     ['Posicione seus pés na marca e espere o sinal, como mostrado abaixo, para medirmos seu peso e altura.',
+      'img/weight.gif', call_height_mass_measurement],
+}
+
+
 def send_triage_to_patient_management_app(triage):
     """
     Sends a triage object in json format to be saved in
@@ -69,18 +103,8 @@ def get_bot_category(response, triage):
         }
 
 
-def map_question_animation(question):
-    d = {'Posicione seus pés na marca e espere o sinal, como mostrado abaixo, para medirmos seu peso e altura.':
-         ['img/weight.gif', {'height': 1.80, 'body_mass': 80}],
-         'Posicione o seu braço, como mostrado abaixo, para medirmos seus dados vitais.':
-         ['img/temperature.gif', {'body_temperature': 38.0, 'blood_oxygen_level': 95.0}],
-         'Posicione seu braço na braçadeira, como mostrado abaixo, para medirmos sua pressão.':
-         ['img/pressure.gif', {'blood_pressure': "[\"120\", \"81\"]"}],
-         }
-    return d[question]
-
-
 def save_values(triage, values):
+    values = values()
     for key in values.keys():
         setattr(triage, key, values[key])
     triage.save()

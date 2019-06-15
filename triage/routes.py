@@ -3,10 +3,10 @@ from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import render, redirect
 from triage.forms import TextForm, BooleanForm
 from .utils import (send_bot_request, send_triage_to_patient_management_app,
-                    map_question_animation, save_values)
+                    save_values)
 from .models import Triage
 from .serializers import TriageSerializer
-from .utils import TRIAGE_RISK_CATEGORIES
+from .utils import TRIAGE_RISK_CATEGORIES, MEASURES_DICT
 
 
 urlpatterns = Router(
@@ -37,17 +37,14 @@ def welcome_page(request):
 
 @urlpatterns.route('animation/' + triage_url)
 def gif_page(request, triage):
-    animation = map_question_animation(triage.next_question)
+    question_info = MEASURES_DICT[triage.next_question]
     info = {'title': '',
-            'text': triage.next_question,
-            'animation': animation[0]}
-    # TODO: Change condition to integration with eletronic devices
+            'text': question_info[0],
+            'animation': question_info[1]}
     if request.method == "POST":
-        anwser = 'estes são meus sinais vitais ' + str(animation[1])
-        save_values(triage, animation[1])
-        print(anwser)
-        next_question = send_bot_request(anwser, triage)
-        return redirect_by_type(next_question, triage)
+        save_values(triage, question_info[2])
+
+        return make_measurements(triage, triage.next_question)
     return render(request, 'triage/animation.html', info)
 
 
@@ -142,6 +139,8 @@ def redirect_by_type(next_question, triage):
         triage.risk_level = choice
         triage.save()
         return redirect('/triage/risk/' + str(triage.pk))
+    elif next_question['type'] == 'measurements':
+        return make_measurements(triage)
     elif next_question['type'] == 'data':
         answer = process_data(next_question['content'], triage)
         next_question = send_bot_request(answer, triage)
@@ -151,11 +150,30 @@ def redirect_by_type(next_question, triage):
         print(next_question)
 
 
+@urlpatterns.route('wboolean/' + triage_url)
+def wboolean_question(request, triage):
+    form = BooleanForm()
+    if request.method == "POST":
+        form = BooleanForm(request.POST)
+        if form.is_valid():
+            answer = form.cleaned_data['boolean']
+            if answer == 'Sim':
+                triage.wheelchair = True
+                triage.save()
+            next_question = {'type': triage.bot_next_type,
+                             'content': triage.bot_next_content}
+            return redirect_by_type(next_question, triage)
+    form.fields['boolean'].label = 'Você é usuário de cadeira de rodas?'
+
+    return render(request, 'triage/boolean_question.html', {'form': form})
+
+
 FLOW = ['Qual é o seu nome?',
         'O que você está sentindo?',
         'Você usa medicação contínua? Se sim, cite quais.'
         ]
-FLOW_ATTRIBUTE = ['name', 'main_complaint', 'continuos_medication']
+FLOW_ATTRIBUTE = ['name', 'main_complaint', 'continuos_medication'
+                  'wheelchair']
 
 
 def first_questions_flow(previous_question, answer, triage):
@@ -176,18 +194,50 @@ def first_questions_flow(previous_question, answer, triage):
         elif number_previous == 2:
             next_question = {'type': triage.bot_next_type,
                              'content': triage.bot_next_content}
-            return redirect_by_type(next_question, triage)
+            return redirect('/triage/wboolean/' + str(triage.pk))
         triage.next_question = FLOW[number_previous+1]
         triage.save()
         print(triage.next_question)
         return redirect('/triage/text_question/' + str(triage.pk))
 
 
+FLOWM = ['temperature', 'pressure', 'body_mass']
+
+
+def make_measurements(triage, previous_question=None):
+    """
+    decides which measurements to make
+    """
+    wheelchair = triage.wheelchair
+    if not previous_question:
+        triage.next_question = FLOWM[0]
+        triage.save()
+        return redirect('/triage/animation/' + str(triage.pk))
+    else:
+        number_previous = FLOWM.index(previous_question)
+        if number_previous == 2 or (number_previous == 1 and wheelchair):
+            answer = triage.get_measurements()
+            next_question = send_bot_request(answer, triage)
+            return redirect_by_type(next_question, triage)
+        else:
+            triage.next_question = FLOWM[number_previous+1]
+            triage.save()
+            return redirect('/triage/animation/' + str(triage.pk))
+
+
 def process_data(content, triage):
+    previous_diagnosis = ['diabetes', 'infarction', 'migrain']
+
     partition = content.partition(".")
     attributes = partition[0].split()
     it = iter(attributes)
+    values = []
     for x in it:
-        setattr(triage, x, next(it))
+        if x in previous_diagnosis and next(it):
+            values.append(x)
+        else:
+            setattr(triage, x, next(it))
+    if values:
+        triage.set_previous_diagnosis(values)
     triage.save()
-    return "Os dados foram salvos com sucesso na aplicação da estação da triagem."
+    return "Os dados foram salvos na aplicação da estação da triagem."
