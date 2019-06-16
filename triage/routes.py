@@ -68,7 +68,6 @@ def text_question(request, triage):
         form = TextForm(request.POST)
         if form.is_valid():
             data = request.POST.copy()
-            print(triage.current_type)
             if triage.bot_next_type == 'textr':
                 answer = triage.next_question + ' ' + data.get('subject')
             else:
@@ -97,13 +96,9 @@ def pacient_risk(request, triage):
     serialized_obj = TriageSerializer(triage)
     response = send_triage_to_patient_management_app(serialized_obj.data)
     if response.status_code == 200:
-        print('top')
-    else:
-        print('ooops')
-        print(response)
-    color = Triage.TRIAGE_RISK_CATEGORIES[triage.risk_level][1]
-    return render(request, 'triage/risk_level.html',
-                  {'risk_color': color})
+        color = Triage.TRIAGE_RISK_CATEGORIES[triage.risk_level][1]
+        return render(request, 'triage/risk_level.html',
+                      {'risk_color': color})
 
 
 @urlpatterns.route('text_question/' + triage_url)
@@ -145,6 +140,10 @@ def redirect_by_type(next_question, triage):
         answer = process_data(next_question['content'], triage)
         next_question = send_bot_request(answer, triage)
         return redirect_by_type(next_question, triage)
+    elif next_question['type'] == 'signal':
+        answer = "Os dados foram salvos na aplicação da estação da triagem."
+        next_question = send_bot_request(answer, triage)
+        return redirect_by_type(next_question, triage)
     else:
         print('tipo não reconhecido')
         print(next_question)
@@ -172,14 +171,17 @@ FLOW = ['Qual é o seu nome?',
         'O que você está sentindo?',
         'Você usa medicação contínua? Se sim, cite quais.'
         ]
-FLOW_ATTRIBUTE = ['name', 'main_complaint', 'continuos_medication'
+FLOW_ATTRIBUTE = ['name', 'main_complaint', 'continuos_medication',
                   'wheelchair']
 
 
 def first_questions_flow(previous_question, answer, triage):
         number_previous = FLOW.index(previous_question)
         setattr(triage, FLOW_ATTRIBUTE[number_previous], answer)
-
+        triage.save()
+        print(FLOW_ATTRIBUTE[number_previous])
+        print(triage.main_complaint)
+        print(triage.continuos_medication)
         if number_previous == 1:
             next_question = send_bot_request(answer, triage)
             if next_question['type'] == 'risk':
@@ -197,7 +199,6 @@ def first_questions_flow(previous_question, answer, triage):
             return redirect('/triage/wboolean/' + str(triage.pk))
         triage.next_question = FLOW[number_previous+1]
         triage.save()
-        print(triage.next_question)
         return redirect('/triage/text_question/' + str(triage.pk))
 
 
@@ -230,13 +231,14 @@ def process_data(content, triage):
 
     partition = content.partition(".")
     attributes = partition[0].split()
-    it = iter(attributes)
+    it = list(iter(attributes))
+    names = it[::2]
     values = []
-    for x in it:
-        if x in previous_diagnosis and next(it):
+    for x in names:
+        if x in previous_diagnosis and (it[it.index(x)+1] != 'None'):
             values.append(x)
         else:
-            setattr(triage, x, next(it))
+            setattr(triage, x, it[it.index(x)+1])
     if values:
         triage.set_previous_diagnosis(values)
     triage.save()
