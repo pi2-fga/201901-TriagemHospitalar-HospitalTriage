@@ -140,7 +140,7 @@ function getAnswerMatches(result_transcript){
   if(ind_transcribe_text_answer && !ind_found_match){
     answer_textarea(result_transcript);
   } else {
-    showInfo('ind_transcribe_text_answer: ' + ind_transcribe_text_answer + 'ind_found_match' + ind_found_match, false);
+    showInfo('ind_transcribe_text_answer: ' + ind_transcribe_text_answer + ', ind_found_match:' + ind_found_match, false);
   }
   ind_found_match = false;
 }
