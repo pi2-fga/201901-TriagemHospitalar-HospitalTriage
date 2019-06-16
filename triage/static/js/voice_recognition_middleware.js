@@ -33,8 +33,9 @@ var grammar_dict = {
 // var expected_answer_group = ['yesno','number','general'];
 var expected_answer_group = ['yesno','pain_scale','general'];
 var ind_transcribe_text_answer = true;
-var ind_supress_text_answer = true;
+var ind_supress_text_answer = false;
 var ind_found_match = false;
+var utterance_is_talking = false;
 
 var full_transcript = '';
 var recognition_result_count = 1;
@@ -119,9 +120,11 @@ if (!('webkitSpeechRecognition' in window)) {
 
 
 function restartRecognition() {
-  recognition_count++;
-  recognition_result_count = 1;
-  recognition.start();
+  if(!utterance_is_talking){
+    recognition_count++;
+    recognition_result_count = 1;
+    recognition.start();
+  }
 }
 
 function getAnswerMatches(result_transcript){
@@ -350,4 +353,16 @@ function textToSpeech(text) {
   msg.text = text;
   msg.lang = 'pt-BR';
   speechSynthesis.speak(msg);
+
+  msg.onstart = function(event) {
+    showInfo('Text to speak: ' + text, false);
+    utterance_is_talking = true;
+    recognition.stop();
+  }
+
+  msg.onend = function(event) {
+    showInfo('Finished speaking after ' + event.elapsedTime + ' milliseconds', false);
+    utterance_is_talking = false;
+    restartRecognition();
+  }
 }
