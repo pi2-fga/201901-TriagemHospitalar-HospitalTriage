@@ -69,8 +69,8 @@ class Triage(models.Model):
         return json.loads(self.previous_diagnosis)
 
     def get_measurements(self):
-        values = {'blood_pressure': "[\"120\", \"81\"]",
-                  'body_temperature': 38.0,
-                  'blood_oxygen_level': 95.0
+        values = {'blood_pressure': self.blood_pressure,
+                  'body_temperature': self.body_temperature,
+                  'blood_oxygen_level': self.blood_oxygen_level
                   }
         return 'estes são meus sinais vitais ' + str(values)

@@ -32,7 +32,7 @@ def call_temperature_oxygen_measurement():
     """
     Calls RPC Server to measure patient height and mass
     """
-    return {'body_temperature': 36.5, 'blood_oxygen_level': 95.0}
+    return {'body_temperature': 36.0, 'blood_oxygen_level': 95.0}
 
 
 def call_eletrocardiogram():

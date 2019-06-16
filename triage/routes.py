@@ -3,7 +3,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import render, redirect
 from triage.forms import TextForm, BooleanForm
 from .utils import (send_bot_request, send_triage_to_patient_management_app,
-                    save_values)
+                    save_values, call_eletrocardiogram)
 from .models import Triage
 from .serializers import TriageSerializer
 from .utils import TRIAGE_RISK_CATEGORIES, MEASURES_DICT
@@ -114,6 +114,21 @@ def first_questions(request, triage):
     return render(request, 'triage/text_question.html', {'form': form})
 
 
+@urlpatterns.route('eletrocardiogram/' + triage_url)
+def eletrocardiogram_page(request, triage):
+    question_info = MEASURES_DICT[triage.next_question]
+    info = {'title': '',
+            'text': question_info[0],
+            'animation': question_info[1]}
+    if request.method == "POST":
+        save_values(triage, question_info[2])
+        call_eletrocardiogram()
+        answer = "Os dados foram salvos na aplicação da estação da triagem."
+        next_question = send_bot_request(answer, triage)
+        return redirect_by_type(next_question, triage)
+    return render(request, 'triage/animation.html', info)
+
+
 def redirect_by_type(next_question, triage):
     triage.next_question = next_question['content']
     triage.current_type = next_question['type']
@@ -144,6 +159,8 @@ def redirect_by_type(next_question, triage):
         answer = "Os dados foram salvos na aplicação da estação da triagem."
         next_question = send_bot_request(answer, triage)
         return redirect_by_type(next_question, triage)
+    elif next_question['type'] == 'eletrocardiogram':
+        return redirect('/triage/eletrocardiogram/' + str(triage.pk))
     else:
         print('tipo não reconhecido')
         print(next_question)
@@ -227,7 +244,9 @@ def make_measurements(triage, previous_question=None):
 
 
 def process_data(content, triage):
-    previous_diagnosis = ['diabetes', 'infarction', 'migrain']
+    previous_diagnosis = {'diabetes': 'Diabetes',
+                          'infarction': 'Infarto do miocárdio',
+                          'migrain': 'Enxaqueca'}
 
     partition = content.partition(".")
     attributes = partition[0].split()
@@ -235,8 +254,8 @@ def process_data(content, triage):
     names = it[::2]
     values = []
     for x in names:
-        if x in previous_diagnosis and (it[it.index(x)+1] != 'None'):
-            values.append(x)
+        if x in previous_diagnosis.keys() and (it[it.index(x)+1] != 'None'):
+            values.append(previous_diagnosis[x])
         else:
             setattr(triage, x, it[it.index(x)+1])
     if values:
