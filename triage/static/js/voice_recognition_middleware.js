@@ -21,7 +21,7 @@ var grammar_pain_scale =
 var grammar_general = 
 [
   ['help'  ,['ajuda', 'socorro', 'isso mesmo']],
-  ['next' ,['proximo pergunta', 'proxima pergunta','proximo etapa', 'proxima etapa']]
+  ['next' ,['proximo pergunta', 'proxima pergunta','proximo etapa', 'proxima etapa', 'proximo', 'proxima']]
 ];
 
 var grammar_dict = {
@@ -33,6 +33,7 @@ var grammar_dict = {
 // var expected_answer_group = ['yesno','number','general'];
 var expected_answer_group = ['yesno','pain_scale','general'];
 var ind_transcribe_text_answer = true;
+var ind_supress_text_answer = true;
 var ind_found_match = false;
 
 var full_transcript = '';
@@ -137,10 +138,11 @@ function getAnswerMatches(result_transcript){
       showInfo('answer type \'' + answer_group + '\' not found on expected answer types collection', true);
     }
   }
-  if(ind_transcribe_text_answer && !ind_found_match){
+  if(ind_transcribe_text_answer && !ind_supress_text_answer && !ind_found_match){
     answer_textarea(result_transcript);
   } else {
-    showInfo('ind_transcribe_text_answer: ' + ind_transcribe_text_answer + ', ind_found_match:' + ind_found_match, false);
+    showInfo('ind_transcribe_text_answer: ' + ind_transcribe_text_answer 
+      + ', ind_supress_text_answer: ' + ind_supress_text_answer + ', ind_found_match: ' + ind_found_match, false);
   }
   ind_found_match = false;
 }
@@ -231,12 +233,16 @@ function answer_textarea(result_transcript){
   var text_area_value = '';
   var text_area_element = document.getElementById("id_subject");
     if(text_area_element !==null){
-      text_area_value = text_area_element.innerHTML;
-      if(text_area_value){
-        text_area_value += ' ';
-      }
+      text_area_value = text_area_element.value;
+      // showInfo('text_area_value: \'' + text_area_value + '\'', true);
+      // if(text_area_value){
+      //   text_area_value += ' ';
+      //   showInfo('*text_area_value: \'' + text_area_value + '\'', true);
+      // }
       text_area_value += result_transcript;
-      text_area_element.innerHTML = text_area_value;
+      // showInfo('**text_area_value: \'' + text_area_value + '\'', true);
+      text_area_element.value = text_area_value;
+      // showInfo('***text_area_element.value: \'' + text_area_element.value + '\'', true);
     } else {
       showInfo('Elements for text area not found on page ', true);
     }
@@ -254,6 +260,8 @@ function answer_yesno(given_answer) {
   }
     if(option_element !==null){
       option_element.checked = true;
+    
+      goToNetxtPage();
     } else {
       showInfo('Elements for yes or no answer not found on page ', true);
     }
@@ -266,6 +274,8 @@ function answer_pain_scale(given_answer) {
   if(option_element !==null){
     option_element.checked = true;
     option_element.focus();
+    
+    goToNetxtPage();
   } else {
     showInfo('Elements for pain scale not found on page ', true);
   }
@@ -277,16 +287,19 @@ function answer_general(given_answer) {
   switch(given_answer){
   case 'next':
     showInfo('Next page request detected', false);
-    
-    var btn_next = document.getElementById("btn_next");
-    if(btn_next !==null){
-      btn_next.click();
-    } else {
-      showInfo('Elements for pain scale not found on page ', true);
-    }
+    goToNetxtPage();
     break;
   case 'help':
     showInfo('Help request detected', true);
+  }
+}
+
+function goToNetxtPage(){
+  var btn_next = document.getElementById("btn_next");
+  if(btn_next !==null){
+    btn_next.click();
+  } else {
+    showInfo('Elements for pain scale not found on page ', true);
   }
 }
 
@@ -296,4 +309,45 @@ function setExpectedAnswers(expectedAnswers){
 
 function setIndTranscribeTextAnswer(should_transcribe){
   ind_transcribe_text_answer = should_transcribe;
+  configMicrophoneButton();
+}
+
+function checkIndSupressTextAnswer(should_supress){
+  ind_supress_text_answer = !ind_supress_text_answer;
+  configMicrophoneButton();
+}
+
+function configMicrophoneButton(){
+  var btn_microphone_icon = document.getElementById("btn_microphone_icon");
+  if(btn_microphone_icon){
+    if(ind_supress_text_answer){
+      btn_microphone_icon.className = "fas fa-microphone-alt";
+    } else {
+      btn_microphone_icon.className = "fas fa-microphone-alt-slash";
+    }
+  }
+}
+
+function speakText() {
+  var question_text = document.getElementById("question_text").innerHTML;
+  var question_label = document.getElementById("question_label").innerHTML;
+  
+  if(question_text){
+    textToSpeech(question_text);
+  }
+  if(question_label){
+    textToSpeech(question_label);
+  }
+}
+
+function textToSpeech(text) {
+  showInfo('Text to speak: ' + text, false);
+  var msg = new SpeechSynthesisUtterance();
+  msg.voiceURI = 'native';
+  msg.volume = 1; // 0 to 1
+  msg.rate = 1; // 0.1 to 10
+  msg.pitch = 0; //0 to 2
+  msg.text = text;
+  msg.lang = 'pt-BR';
+  speechSynthesis.speak(msg);
 }

@@ -13,7 +13,7 @@
   <form method="post" name="scale-form">
     {% csrf_token %}
     <div class="content">
-      <h2>Pressione um número de 1 a 10 que representa a intensidade da dor que você está sentindo</h2>
+      <h2 id="question_label">Pressione um número de 1 a 10 que representa a intensidade da dor que você está sentindo</h2>
       {% if erro %}
         {{ erro }}
       {% endif %}

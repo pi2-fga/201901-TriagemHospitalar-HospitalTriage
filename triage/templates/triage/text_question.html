@@ -5,21 +5,24 @@
 
  {% block content %}
 
-<script>
-  setExpectedAnswers(['general']);
-  setIndTranscribeTextAnswer(true);
-</script>
-
  <div class="wrapper">
-         <h2>{{text}}</h2>
+         <h2 id="question_text">{{text}}</h2>
          <form method="POST" class="post-form">
            {% csrf_token %}
            <div class="content">
-             <h2>{{ form.subject.label }}</h2>
-             {{ form.subject }}
-             <button class="btn btn-primary btn-icon"><i class="fas fa-microphone-alt"></i></button>
+              <h2 id="question_label">{{ form.subject.label }}</h2>
+              {{ form.subject }}
+              <button type="button" onclick="checkIndSupressTextAnswer()" class="btn btn-primary btn-icon">
+                <i id="btn_microphone_icon" class="fas fa-microphone-alt"></i></button>
          </div>
          <button id="btn_next" type="submit" class="btn btn-primary btn-lg next-button">Próxima</button>
        </form>
  </div>
+
+  <script>
+    setExpectedAnswers(['general']);
+    setIndTranscribeTextAnswer(true);
+    // swal("Atenção", "Ouça as instruções a seguir!", ).then(() => speakText());
+    speakText();
+  </script>
  {% endblock %}

@@ -6,7 +6,7 @@
  
  <div class="wrapper">
      <div class="content">
-         <h2>{{text}}</h2>
+         <h2 id="question_text">{{text}}</h2>
          <img src={% static animation %}>
      </div>
    </div>
@@ -19,5 +19,5 @@
  <script>
     setExpectedAnswers(['general']);
     setIndTranscribeTextAnswer(false);
-  </script>
+ </script>
  {% endblock %}
