@@ -7,6 +7,7 @@ services:
         # - data:/var/lib/postgresql/data:rw
         - ./scripts/db:/docker-entrypoint-initdb.d:rw
   hospital-triage:
+    container_name: triage
     env_file:
       - ./etc/env/apps.env
     build: .
