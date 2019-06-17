@@ -43,6 +43,10 @@ class Triage(models.Model):
     next_question = models.CharField(max_length=500, null=True, blank=True)
     current_type = models.CharField(max_length=500, null=True, blank=True)
     wheelchair = models.BooleanField(default=False)
+    other_symptoms = models.CharField(max_length=500, null=True, blank=True)
+
+    def set_main_complaint(self, x):
+        self.main_complaint = json.dumps(x)
 
     def set_blood_pressure(self, x):
         self.blood_pressure = json.dumps(x)
@@ -73,4 +77,8 @@ class Triage(models.Model):
                   'body_temperature': self.body_temperature,
                   'blood_oxygen_level': self.blood_oxygen_level
                   }
+        if self.other_symptoms:
+            main_complaint = [self.main_complaint, self.other_symptoms_db]
+            self.set_main_complaint(main_complaint)
+            self.save()
         return 'estes são meus sinais vitais ' + str(values)

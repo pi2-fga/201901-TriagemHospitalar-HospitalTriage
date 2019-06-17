@@ -257,7 +257,8 @@ def process_data(content, triage):
         if x in previous_diagnosis.keys() and (it[it.index(x)+1] != 'None'):
             values.append(previous_diagnosis[x])
         else:
-            setattr(triage, x, it[it.index(x)+1])
+            if it[it.index(x)+1] != 'None':
+                setattr(triage, x, it[it.index(x)+1])
     if values:
         triage.set_previous_diagnosis(values)
     triage.save()
