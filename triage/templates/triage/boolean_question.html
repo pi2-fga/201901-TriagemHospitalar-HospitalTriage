@@ -4,14 +4,20 @@
  {% block title %}{{title}}{% endblock %}
 
  {% block content %}
+
+ <script>
+  setExpectedAnswers(['yesno','general']);
+  setIndTranscribeTextAnswer(false);
+ </script>
+
  <div class="wrapper">
-         <h2>{{text}}</h2>
+         <h2 id="question_label">{{text}}</h2>
          <form method="POST" class="post-form">
            {% csrf_token %}
            <div class="content">
            {{ form.as_p }}
          </div>
-            <button type="submit" class="btn btn-primary btn-lg next-button">Próxima</button>
+            <button id="btn_next" type="submit" class="btn btn-primary btn-lg next-button">Próxima</button>
        </form>
  </div>
  {% endblock %}

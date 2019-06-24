@@ -1,14 +1,17 @@
-from triage.utils import map_question_animation
+from triage.utils import MEASURES_DICT
 
 QUESTIONS = [
-    'Posicione seus pés na marca e espere o sinal, como mostrado abaixo, para medirmos seu peso e altura.',
     'Posicione o seu braço, como mostrado abaixo, para medirmos seus dados vitais.',
-    'Posicione seu braço na braçadeira, como mostrado abaixo, para medirmos sua pressão.'
+    'Posicione seu braço na braçadeira, como mostrado abaixo, para medirmos sua pressão.',
+    'Posicione seus pés na marca e espere o sinal, como mostrado abaixo, para medirmos seu peso e altura.',
+    'Aguarde para realização de mais exames.'
 ]
 
-GIF = ['img/weight.gif', 'img/temperature.gif', 'img/pressure.gif']
+GIF = ['img/temperature.gif', 'img/pressure.gif', 'img/weight.gif', 'img/temperature.gif']
+TYPE = ['temperature', 'pressure', 'body_mass', 'eletrocardiogram']
 
 
 def test_question_gif(client):
-    for idx, question in enumerate(QUESTIONS):
-        assert map_question_animation(question)[0] == GIF[idx]
+    for idx, question in enumerate(TYPE):
+        assert MEASURES_DICT[question][0] == QUESTIONS[idx]
+        assert MEASURES_DICT[question][1] == GIF[idx]
