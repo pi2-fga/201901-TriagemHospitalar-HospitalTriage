@@ -219,7 +219,7 @@ def first_questions_flow(previous_question, answer, triage):
         return redirect('/triage/text_question/' + str(triage.pk))
 
 
-FLOWM = ['temperature', 'pressure', 'body_mass']
+FLOWM = ['temperature', 'oximetry', 'pressure', 'body_mass']
 
 
 def make_measurements(triage, previous_question=None):
@@ -233,7 +233,7 @@ def make_measurements(triage, previous_question=None):
         return redirect('/triage/animation/' + str(triage.pk))
     else:
         number_previous = FLOWM.index(previous_question)
-        if number_previous == 2 or (number_previous == 1 and wheelchair):
+        if number_previous == 3 or (number_previous == 2 and wheelchair):
             answer = triage.get_measurements()
             next_question = send_bot_request(answer, triage)
             return redirect_by_type(next_question, triage)

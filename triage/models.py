@@ -75,7 +75,8 @@ class Triage(models.Model):
     def get_measurements(self):
         values = {'blood_pressure': self.blood_pressure,
                   'body_temperature': self.body_temperature,
-                  'blood_oxygen_level': self.blood_oxygen_level
+                  'blood_oxygen_level': self.blood_oxygen_level,
+                  'body_mass': self.body_mass
                   }
         if self.other_symptoms:
             main_complaint = [self.main_complaint, self.other_symptoms_db]
