@@ -28,16 +28,23 @@ def call_height_mass_measurement():
     return {'height': 1.80, 'body_mass': 80}
 
 
-def call_temperature_oxygen_measurement():
+def call_temperature_measurement():
     """
-    Calls RPC Server to measure patient height and mass
+    Calls RPC Server to measure patient body temperature
     """
-    return {'body_temperature': 36.0, 'blood_oxygen_level': 95.0}
+    return {'body_temperature': 36.0}
+
+
+def call_oxygen_measurement():
+    """
+    Calls RPC Server to measure patient blood oxygen level
+    """
+    return {'blood_oxygen_level': 95.0}
 
 
 def call_eletrocardiogram():
     """
-    Calls RPC Server to measure patient height and mass
+    Calls RPC Server to make eletrocardiogram
     """
     return {'eletrocardiogram': 95.0}
 
@@ -45,7 +52,10 @@ def call_eletrocardiogram():
 MEASURES_DICT = {
      'temperature':
      ['Posicione o seu braço, como mostrado abaixo, para medirmos seus dados vitais.',
-      'img/temperature.gif', call_temperature_oxygen_measurement],
+      'img/temperature.gif', call_temperature_measurement],
+     'oximetry':
+     ['Posicione seu dedo na presilha, como mostrado abaixo, para medirmos seus dados vitais.',
+      'img/oximetry.gif', call_oxygen_measurement],
      'pressure':
      ['Posicione seu braço na braçadeira, como mostrado abaixo, para medirmos sua pressão.',
       'img/pressure.gif', call_blood_pressure_measurement],
