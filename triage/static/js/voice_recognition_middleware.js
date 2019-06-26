@@ -197,17 +197,24 @@ function showInfo(info, ind_alert, timestamp){
     formated_timestamp = formatTimestamp(timestamp);
   }
 
-  //// Somente para debug, precisa adicionar os componentes ao HTML
-  // var info_div = document.createElement('div')
-  // var info_span = document.createElement('span')
-  // info_div.innerHTML = '[' + formated_timestamp + '] $ > ';
-  // info_span.innerHTML = info;
-  // if(ind_alert){ 
-  //   info_span.style.color = 'red';
-  // }
+  // Somente para debug, precisa adicionar os componentes ao HTML
 
-  // info_div.appendChild(info_span);
-  // speech_info.appendChild(info_div);
+  var debug_area = document.getElementById("debug_area")
+  console.log('aaaaaaaaaaaaaaaa')
+  if(debug_area){
+    console.log('bbbbbbbbbbbbbbbbb')
+    var info_div = document.createElement('div')
+    var info_span = document.createElement('span')
+    info_div.innerHTML = '[' + formated_timestamp + '] $ > ';
+    info_span.innerHTML = info;
+    if(ind_alert){ 
+      info_span.style.color = 'red';
+    }
+    info_div.appendChild(info_span);
+
+    debug_area.appendChild(info_div);
+    console.log('cccccccccccc')
+  }
 
 
   if(ind_alert){ 
@@ -252,7 +259,7 @@ function answer_textarea(result_transcript){
 }
 
 function answer_yesno(given_answer) {
-  console.log("answer_yesno" + ', given_answer: ' + given_answer);
+  showInfo("answer_yesno" + ', given_answer: ' + given_answer,false);
   var option_element
   if (given_answer === 'yes') {
     option_element = document.querySelector("#id_boolean input[value='Sim']")
@@ -271,7 +278,7 @@ function answer_yesno(given_answer) {
 }
 
 function answer_pain_scale(given_answer) {
-  console.log("answer_pain_scale" + ', given_answer: ' + given_answer);
+  showInfo("answer_pain_scale" + ', given_answer: ' + given_answer,false);
 
 	var option_element = document.getElementById("pain_option_" + given_answer);
   if(option_element !==null){
@@ -285,7 +292,7 @@ function answer_pain_scale(given_answer) {
 }
 
 function answer_general(given_answer) {
-  console.log("answer_general" + ', given_answer: ' + given_answer);
+  showInfo("answer_general" + ', given_answer: ' + given_answer, false);
 
   switch(given_answer){
   case 'next':
