@@ -44,6 +44,7 @@ class Triage(models.Model):
     current_type = models.CharField(max_length=500, null=True, blank=True)
     wheelchair = models.BooleanField(default=False)
     other_symptoms = models.CharField(max_length=500, null=True, blank=True)
+    eletrocardiogram = models.CharField(max_length=6000, null=True, blank=True)
 
     def set_main_complaint(self, x):
         self.main_complaint = json.dumps(x)
@@ -51,8 +52,14 @@ class Triage(models.Model):
     def set_blood_pressure(self, x):
         self.blood_pressure = json.dumps(x)
 
+    def set_eletrocardiogram(self, x):
+        self.eletrocardiogram = json.dumps(x)
+
     def get_blood_pressure(self):
         return json.loads(self.blood_pressure)
+
+    def get_eletrocardiogram(self):
+        return json.loads(self.eletrocardiogram)
 
     def set_alergies(self, x):
         self.alergies = json.dumps(x)
