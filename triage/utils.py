@@ -106,7 +106,12 @@ def get_bot_category(response, triage):
     Process bot message format, transforming it into a dict
     """
     response = response.text
-    if response:
+    if response == '[]\n':
+        return {
+            'type': 'restart',
+            'content': None,
+        }
+    elif response:
         response = json.loads(response)[0]["text"]
         partition = response.partition(' ')
         response_type = partition[0]
