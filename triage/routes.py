@@ -133,7 +133,6 @@ def redirect_by_type(next_question, triage):
     triage.next_question = next_question['content']
     triage.current_type = next_question['type']
     triage.save()
-    print(next_question['type'])
     if next_question['type'] == 'yes_or_no':
         return redirect('/triage/boolean/' + str(triage.pk))
     elif next_question['type'] == 'text':
@@ -161,6 +160,8 @@ def redirect_by_type(next_question, triage):
         return redirect_by_type(next_question, triage)
     elif next_question['type'] == 'eletrocardiogram':
         return redirect('/triage/eletrocardiogram/' + str(triage.pk))
+    elif next_question['type'] == 'restart':
+        return redirect('/triage/')
     else:
         print('tipo não reconhecido')
         print(next_question)
@@ -206,6 +207,8 @@ def first_questions_flow(previous_question, answer, triage):
                 triage.risk_level = choice
                 triage.save()
                 return redirect('/triage/risk/' + str(triage.pk))
+            elif next_question['type'] == 'restart':
+                return redirect('/triage/')
             else:
                 triage.bot_next_type = next_question['type']
                 triage.bot_next_content = next_question['content']

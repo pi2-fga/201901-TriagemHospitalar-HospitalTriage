@@ -205,9 +205,9 @@ function showInfo(info, ind_alert, timestamp){
   // Somente para debug, precisa adicionar os componentes ao HTML
 
   var debug_area = document.getElementById("debug_area")
-  console.log('aaaaaaaaaaaaaaaa')
+  // console.log('aaaaaaaaaaaaaaaa')
   if(debug_area){
-    console.log('bbbbbbbbbbbbbbbbb')
+    // console.log('bbbbbbbbbbbbbbbbb')
     var info_div = document.createElement('div')
     var info_span = document.createElement('span')
     info_div.innerHTML = '[' + formated_timestamp + '] $ > ';
@@ -218,7 +218,7 @@ function showInfo(info, ind_alert, timestamp){
     info_div.appendChild(info_span);
 
     debug_area.appendChild(info_div);
-    console.log('cccccccccccc')
+    // console.log('cccccccccccc')
   }
 
 
@@ -324,29 +324,29 @@ function setExpectedAnswers(expectedAnswers){
 
 function setIndTranscribeTextAnswer(should_transcribe){
   ind_transcribe_text_answer = should_transcribe;
-  configMicrophoneButton();
+  configTextAreaAndButton();
 }
 
 function checkIndSupressTextAnswer(){
 
-  var text_area_element = document.getElementById("id_subject");
   if(ind_supress_text_answer){
-    text_area_element.disabled = true;
     ind_supress_text_answer = false;
   } else{
-    text_area_element.disabled = false;
     ind_supress_text_answer = true;
   }
   // ind_supress_text_answer = !ind_supress_text_answer;
-  configMicrophoneButton();
+  configTextAreaAndButton();
 }
 
-function configMicrophoneButton(){
+function configTextAreaAndButton(){
   var btn_microphone_icon = document.getElementById("btn_microphone_icon");
+  var text_area_element = document.getElementById("id_subject");
   if(btn_microphone_icon){
     if(ind_supress_text_answer){
+      text_area_element.disabled = false;
       btn_microphone_icon.className = "fas fa-microphone-alt";
     } else {
+      text_area_element.disabled = true;
       btn_microphone_icon.className = "fas fa-microphone-alt-slash";
     }
   }
