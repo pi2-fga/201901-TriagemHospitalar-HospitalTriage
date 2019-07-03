@@ -37,7 +37,6 @@ var ind_supress_text_answer = false;
 var ind_found_match = false;
 var utterance_is_talking = false;
 
-var full_transcript = '';
 var recognition_result_count = 1;
 var recognition_count = 1;
 var ending_timestamp;
@@ -55,9 +54,6 @@ if (!('webkitSpeechRecognition' in window)) {
   recognition.start();
 
   recognition.onstart = function() {
-    if( full_transcript){
-      full_transcript += ' ';
-    }
     showInfo('recognition ' + recognition_count + ' has started', false, event.timeStamp);
   };
 
@@ -105,13 +101,10 @@ if (!('webkitSpeechRecognition' in window)) {
   recognition.onresult = function(event) {
     var  result_transcript = '';
     for (var i = event.resultIndex; i < event.results.length; ++i) {
-        result_transcript += event.results[i][0].transcript;
+      if(event.results[i].isFinal){
+          result_transcript += event.results[i][0].transcript;
+      }
     }
-
-    full_transcript +=  result_transcript;
-
-    //// Somente para debug, precisa adicionar os componentes ao HTML
-    // speech_text.innerHTML = full_transcript;
 
     showInfo('result ' + recognition_count + '/' + recognition_result_count + ' - ' +  result_transcript, false, event.timeStamp);
     recognition_result_count++;
@@ -149,7 +142,7 @@ function getAnswerMatches(result_transcript){
   if(ind_transcribe_text_answer && !ind_supress_text_answer && !ind_found_match){
     answer_textarea(result_transcript);
   } else {
-    showInfo('ind_transcribe_text_answer: ' + ind_transcribe_text_answer 
+    showInfo('Can not write because -- ind_transcribe_text_answer: ' + ind_transcribe_text_answer 
       + ', ind_supress_text_answer: ' + ind_supress_text_answer + ', ind_found_match: ' + ind_found_match, false);
   }
   ind_found_match = false;
