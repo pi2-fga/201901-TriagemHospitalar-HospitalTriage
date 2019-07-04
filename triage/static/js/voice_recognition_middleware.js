@@ -1,4 +1,3 @@
-var has_error = false;
 var grammar_yesno = 
 [
   ['yes'  ,['sim', 'exatamente', 'isso mesmo']],
@@ -57,25 +56,24 @@ if (!('webkitSpeechRecognition' in window)) {
     showInfo('recognition ' + recognition_count + ' has started', false, event.timeStamp);
   };
 
-  recognition.onaudiostart = function(event) {
-    showInfo('recognition audio started', false, event.timeStamp);
-  };
+  // recognition.onaudiostart = function(event) {
+  //   showInfo('recognition audio started', false, event.timeStamp);
+  // };
 
-  recognition.onaudioend = function(event) {
-    showInfo('recognition audio ended', false, event.timeStamp);
-  };
+  // recognition.onaudioend = function(event) {
+  //   showInfo('recognition audio ended', false, event.timeStamp);
+  // };
 
   recognition.onspeechstart = function (event) {
     showInfo('recognition speech started', false, event.timeStamp);
     // showInfo('recognition thinking has started', false);
   };
 
-  recognition.onspeechend = function (event) {
-    showInfo('recognition speech ended', false, event.timeStamp);
-  };
+  // recognition.onspeechend = function (event) {
+  //   showInfo('recognition speech ended', false, event.timeStamp);
+  // };
 
   recognition.onerror = function(event) {
-    has_error = true;
     showInfo('recognition error - ' + event.error, true, event.timeStamp);
   };
   
@@ -197,22 +195,22 @@ function showInfo(info, ind_alert, timestamp){
 
   // Somente para debug, precisa adicionar os componentes ao HTML
 
-  var debug_area = document.getElementById("debug_area")
-  // console.log('aaaaaaaaaaaaaaaa')
-  if(debug_area){
-    // console.log('bbbbbbbbbbbbbbbbb')
-    var info_div = document.createElement('div')
-    var info_span = document.createElement('span')
-    info_div.innerHTML = '[' + formated_timestamp + '] $ > ';
-    info_span.innerHTML = info;
-    if(ind_alert){ 
-      info_span.style.color = 'red';
-    }
-    info_div.appendChild(info_span);
+  // var debug_area = document.getElementById("debug_area")
+  // // console.log('aaaaaaaaaaaaaaaa')
+  // if(debug_area){
+  //   // console.log('bbbbbbbbbbbbbbbbb')
+  //   var info_div = document.createElement('div')
+  //   var info_span = document.createElement('span')
+  //   info_div.innerHTML = '[' + formated_timestamp + '] $ > ';
+  //   info_span.innerHTML = info;
+  //   if(ind_alert){ 
+  //     info_span.style.color = 'red';
+  //   }
+  //   info_div.appendChild(info_span);
 
-    debug_area.appendChild(info_div);
-    // console.log('cccccccccccc')
-  }
+  //   debug_area.appendChild(info_div);
+  //   // console.log('cccccccccccc')
+  // }
 
 
   if(ind_alert){ 
