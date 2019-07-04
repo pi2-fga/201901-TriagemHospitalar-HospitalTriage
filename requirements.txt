@@ -6,3 +6,4 @@ requests
 djangorestframework
 pytest
 pytest-django
+pika

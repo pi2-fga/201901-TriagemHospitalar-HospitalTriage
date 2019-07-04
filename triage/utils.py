@@ -2,6 +2,7 @@ import os
 import requests
 import json
 from django.utils.translation import ugettext_lazy as _
+from rpc.rpc_client import RpcClient
 
 
 HEADERS = {'content-type': 'application/json'}
@@ -18,35 +19,82 @@ def call_blood_pressure_measurement():
     """
     Calls RPC Server to measure patient blood pressure
     """
-    return {'blood_pressure': "[\"120\", \"81\"]"}
+    # return {'blood_pressure': "[\"120\", \"81\"]"}
+
+    rpc = RpcClient()
+    rpc_response = rpc.call('pressao')
+    rpc.connection.close()
+
+    blood_pressure_dict = {
+        'blood_pressure': rpc_response
+    }
+    return blood_pressure_dict
 
 
 def call_height_mass_measurement():
     """
     Calls RPC Server to measure patient height and mass
     """
-    return {'height': 1.80, 'body_mass': 80}
+    # return {'height': 1.80, 'body_mass': 80}
+
+    rpc = RpcClient()
+    rpc_response_height = rpc.call('altura')
+    rpc_response_body_mass = rpc.call('peso')
+    rpc.connection.close()
+
+    height_mass_dict = {
+        'height': float(rpc_response_height),
+        'body_mass': float(rpc_response_body_mass)
+    }
+    return height_mass_dict
 
 
 def call_temperature_measurement():
     """
     Calls RPC Server to measure patient body temperature
     """
-    return {'body_temperature': 36.0}
+    # return {'body_temperature': 36.0}
+
+    rpc = RpcClient()
+    rpc_response = rpc.call('temperatura')
+    rpc.connection.close()
+
+    body_temperature_dict = {
+        'body_temperature': float(rpc_response)
+    }
+    return body_temperature_dict
 
 
 def call_oxygen_measurement():
     """
     Calls RPC Server to measure patient blood oxygen level
     """
-    return {'blood_oxygen_level': 95.0}
+    # return {'blood_oxygen_level': 95.0}
+
+    rpc = RpcClient()
+    rpc_response = rpc.call('oximetria')
+    rpc.connection.close()
+
+    blood_oxygen_level_dict = {
+        'blood_oxygen_level': float(rpc_response)
+    }
+    return blood_oxygen_level_dict
 
 
 def call_eletrocardiogram():
     """
     Calls RPC Server to make eletrocardiogram
     """
-    return {'eletrocardiogram': 95.0}
+    # return {'eletrocardiogram': 95.0}
+
+    rpc = RpcClient()
+    rpc_response = rpc.call('ecg')
+    rpc.connection.close()
+
+    eletrocardiogram_dict = {
+        'eletrocardiogram': rpc_response
+    }
+    return eletrocardiogram_dict
 
 
 MEASURES_DICT = {

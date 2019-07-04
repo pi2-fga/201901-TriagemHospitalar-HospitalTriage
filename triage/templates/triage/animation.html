@@ -3,21 +3,51 @@
 
  {% block title %}{{title}}{% endblock %}
  {% block content %}
- 
+
  <div class="wrapper">
      <div class="content">
-         <h2 id="question_text">{{text}}</h2>
-         <img src={% static animation %}>
+        <h2 id="question_text">{{text}}</h2>
+        <img class="medicao" src="{% static 'img/wait.gif' %}">
+        <img src={% static animation %}>
+        <img class="medicao" src="{% static 'img/wait.gif' %}">
+        <h3 id="medicao-text" class="medicao">Relizando medição...</h3>
      </div>
    </div>
    <form method="POST" class="post-form">
      {% csrf_token %}
-     <button id="btn_next" type="submit" class="btn btn-primary btn-lg next-button">Próxima</button>
+     <button onclick="show()" id="btn_next" type="submit" class="btn btn-primary btn-lg next-button">Próxima</button>
    </form>
  </div>
  
  <script>
     setExpectedAnswers(['general']);
     setIndTranscribeTextAnswer(false);
+    $(".medicao").hide();
+
+    function show() {
+      $(".medicao").show();
+    };
+
+    $(function () {
+      var messages = [],
+        index = 0;
+
+      messages.push('Relizando medição');
+      messages.push('Relizando medição.');
+      messages.push('Relizando medição..');
+      messages.push('Relizando medição...');
+
+      function cycle() {
+        $('#medicao-text').html(messages[index]);
+        index++;
+
+        if (index === messages.length) {
+          index = 0;
+        }
+        setTimeout(cycle, 500);
+      }
+
+      cycle();
+    });
  </script>
  {% endblock %}
