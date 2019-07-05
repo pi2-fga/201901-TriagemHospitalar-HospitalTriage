@@ -22,7 +22,7 @@ def call_blood_pressure_measurement():
     # return {'blood_pressure': "[\"120\", \"81\"]"}
 
     rpc = RpcClient()
-    rpc_response = rpc.call('pressao')
+    rpc_response = rpc.call('pressao').decode()
     rpc.connection.close()
 
     blood_pressure_dict = {
@@ -38,8 +38,8 @@ def call_height_mass_measurement():
     # return {'height': 1.80, 'body_mass': 80}
 
     rpc = RpcClient()
-    rpc_response_height = rpc.call('altura')
-    rpc_response_body_mass = rpc.call('peso')
+    rpc_response_height = rpc.call('altura').decode()
+    rpc_response_body_mass = rpc.call('peso').decode()
     rpc.connection.close()
 
     height_mass_dict = {
@@ -56,7 +56,7 @@ def call_temperature_measurement():
     # return {'body_temperature': 36.0}
 
     rpc = RpcClient()
-    rpc_response = rpc.call('temperatura')
+    rpc_response = rpc.call('temperatura').decode()
     rpc.connection.close()
 
     body_temperature_dict = {
@@ -72,7 +72,7 @@ def call_oxygen_measurement():
     # return {'blood_oxygen_level': 95.0}
 
     rpc = RpcClient()
-    rpc_response = rpc.call('oximetria')
+    rpc_response = rpc.call('oximetria').decode()
     rpc.connection.close()
 
     blood_oxygen_level_dict = {
@@ -88,7 +88,7 @@ def call_eletrocardiogram():
     # return {'eletrocardiogram': 95.0}
 
     rpc = RpcClient()
-    rpc_response = rpc.call('ecg')
+    rpc_response = rpc.call('ecg').decode()
     rpc.connection.close()
 
     eletrocardiogram_dict = {
