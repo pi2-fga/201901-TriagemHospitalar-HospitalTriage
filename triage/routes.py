@@ -146,7 +146,9 @@ def redirect_by_type(next_question, triage):
     elif next_question['type'] == 'risk':
         choice = TRIAGE_RISK_CATEGORIES[next_question['content']]
         triage.risk_level = choice
-        triage.alergies = [alergies]
+        triage.set_alergies = [triage.alergies]
+        triage.set_main_complaint = [triage.main_complaint]
+        triage.set_continuos_medication = [triage.continuos_medication]
         triage.save()
         return redirect('/triage/risk/' + str(triage.pk))
     elif next_question['type'] == 'measurements':
@@ -196,8 +198,6 @@ FLOW_ATTRIBUTE = ['name', 'main_complaint', 'continuos_medication',
 
 def first_questions_flow(previous_question, answer, triage):
         number_previous = FLOW.index(previous_question)
-        if number_previous == 1 or number_previous == 2:
-            answer = [answer]
         setattr(triage, FLOW_ATTRIBUTE[number_previous], answer)
         triage.save()
         if number_previous == 1:
