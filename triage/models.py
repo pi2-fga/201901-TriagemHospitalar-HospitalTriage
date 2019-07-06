@@ -44,7 +44,7 @@ class Triage(models.Model):
     current_type = models.CharField(max_length=500, null=True, blank=True)
     wheelchair = models.BooleanField(default=False)
     other_symptoms = models.CharField(max_length=500, null=True, blank=True)
-    eletrocardiogram = models.CharField(max_length=6000, null=True, blank=True)
+    eletrocardiogram = models.TextField(null=True, blank=True)
 
     def set_main_complaint(self, x):
         self.main_complaint = json.dumps(x)

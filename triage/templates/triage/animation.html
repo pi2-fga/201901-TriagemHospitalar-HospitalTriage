@@ -26,6 +26,17 @@
 
     function show() {
       $(".medicao").show();
+      $("#btn_next").prop("disabled", true);
+      $('.post-form').submit();
+      // $('.post-form').one('submit', function() {
+      //   $(this).find('input[type="submit"]').delay(100).attr('disabled', 'disabled');
+      // });
+      // setTimeout(
+      //   function () {
+      //     $("#btn_next").prop("disabled", true);
+      //   },
+      //   100
+      // );
     };
 
     $(function () {
