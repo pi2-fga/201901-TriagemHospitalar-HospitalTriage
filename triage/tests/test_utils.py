@@ -7,7 +7,7 @@ QUESTIONS = [
     'Aguarde para realização de mais exames.'
 ]
 
-GIF = ['img/temperature.gif', 'img/pressure.gif', 'img/weight.gif', 'img/temperature.gif']
+GIF = ['img/temperature.gif', 'img/pressure.gif', 'img/weight.gif', 'img/wait.gif']
 TYPE = ['temperature', 'pressure', 'body_mass', 'eletrocardiogram']
 
 

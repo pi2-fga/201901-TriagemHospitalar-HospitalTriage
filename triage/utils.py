@@ -111,7 +111,7 @@ MEASURES_DICT = {
      ['Posicione seus pés na marca e espere o sinal, como mostrado abaixo, para medirmos seu peso e altura.',
       'img/weight.gif', call_height_mass_measurement],
      'eletrocardiogram':
-     ['Aguarde para realização de mais exames.', 'img/temperature.gif',
+     ['Aguarde para realização de mais exames.', 'img/wait.gif',
       call_eletrocardiogram]
 }
 
