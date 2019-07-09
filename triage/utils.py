@@ -22,8 +22,37 @@ def call_blood_pressure_measurement():
     # return {'blood_pressure': "[\"120\", \"81\"]"}
 
     rpc = RpcClient()
-    rpc_response = rpc.call('pressao').decode()
+    rpc_response = rpc.call('pressao')
     rpc.connection.close()
+
+    try:
+
+        rpc_response_decoded = rpc_response.decode()
+        rpc_response_loads = json.loads(rpc_response_decoded)
+
+        if isinstance(rpc_response_loads, list):
+
+            if len(rpc_response_loads) != 2:
+                raise Exception()
+
+            for i in range(len(rpc_response_loads)):
+
+                if isinstance(rpc_response_loads[i], float):
+                    rpc_response_loads[i] = int(rpc_response_loads[i])
+                elif not isinstance(rpc_response_loads[i], int):
+                    raise Exception()
+
+                if rpc_response_loads[i] < 0 or rpc_response_loads[i] > 999:
+                    raise Exception()
+
+            rpc_response = rpc_response_loads
+
+        else:
+            raise Exception()
+
+    except:
+
+        rpc_response = '-1000'  # Error flag
 
     blood_pressure_dict = {
         'blood_pressure': rpc_response
@@ -38,13 +67,64 @@ def call_height_mass_measurement():
     # return {'height': 1.80, 'body_mass': 80}
 
     rpc = RpcClient()
-    rpc_response_height = rpc.call('altura').decode()
-    rpc_response_body_mass = rpc.call('peso').decode()
+    rpc_response_altura = rpc.call('altura')
     rpc.connection.close()
 
+    try:
+
+        rpc_response_decoded_altura = rpc_response_altura.decode()
+        rpc_response_loads_altura = json.loads(rpc_response_decoded_altura)
+
+        if isinstance(rpc_response_loads_altura, int) or \
+                isinstance(rpc_response_loads_altura, float):
+
+            if isinstance(rpc_response_loads_altura, float):
+                rpc_response_loads_altura = int(rpc_response_loads_altura)
+
+            if rpc_response_loads_altura < 0 or \
+                    rpc_response_loads_altura > 210:
+                raise Exception()
+
+            rpc_response_altura = rpc_response_loads_altura
+
+        else:
+            raise Exception()
+
+    except:
+
+        rpc_response_altura = -1000  # Error flag
+
+    rpc = RpcClient()
+    rpc_response_peso = rpc.call('peso')
+    rpc.connection.close()
+
+    try:
+
+        rpc_response_decoded_peso = rpc_response_peso.decode()
+        rpc_response_loads_peso = json.loads(rpc_response_decoded_peso)
+
+        if isinstance(rpc_response_loads_peso, int) or \
+                isinstance(rpc_response_loads_peso, float):
+
+            if isinstance(rpc_response_loads_peso, int):
+                rpc_response_loads_peso = float(rpc_response_loads_peso)
+
+            if rpc_response_loads_peso < 0 or \
+                    rpc_response_loads_peso > 200:
+                raise Exception()
+
+            rpc_response_peso = round(rpc_response_loads_peso, 1)
+
+        else:
+            raise Exception()
+
+    except:
+
+        rpc_response_peso = -1000.0  # Error flag
+
     height_mass_dict = {
-        'height': float(rpc_response_height),
-        'body_mass': float(rpc_response_body_mass)
+        'height': rpc_response_altura,
+        'body_mass': rpc_response_peso
     }
     return height_mass_dict
 
@@ -56,11 +136,35 @@ def call_temperature_measurement():
     # return {'body_temperature': 36.0}
 
     rpc = RpcClient()
-    rpc_response = rpc.call('temperatura').decode()
+    rpc_response = rpc.call('temperatura')
     rpc.connection.close()
 
+    try:
+
+        rpc_response_decoded = rpc_response.decode()
+        rpc_response_loads = json.loads(rpc_response_decoded)
+
+        if isinstance(rpc_response_loads, int) or \
+                isinstance(rpc_response_loads, float):
+
+            if isinstance(rpc_response_loads, int):
+                rpc_response_loads = float(rpc_response_loads)
+
+            if rpc_response_loads < 0 or \
+                    rpc_response_loads > 99.9:
+                raise Exception()
+
+            rpc_response = round(rpc_response_loads, 1)
+
+        else:
+            raise Exception()
+
+    except:
+
+        rpc_response = -1000.0  # Error flag
+
     body_temperature_dict = {
-        'body_temperature': float(rpc_response)
+        'body_temperature': rpc_response
     }
     return body_temperature_dict
 
@@ -72,11 +176,35 @@ def call_oxygen_measurement():
     # return {'blood_oxygen_level': 95.0}
 
     rpc = RpcClient()
-    rpc_response = rpc.call('oximetria').decode()
+    rpc_response = rpc.call('oximetria')
     rpc.connection.close()
 
+    try:
+
+        rpc_response_decoded = rpc_response.decode()
+        rpc_response_loads = json.loads(rpc_response_decoded)
+
+        if isinstance(rpc_response_loads, int) or \
+                isinstance(rpc_response_loads, float):
+
+            if isinstance(rpc_response_loads, int):
+                rpc_response_loads = float(rpc_response_loads)
+
+            if rpc_response_loads < 0 or \
+                    rpc_response_loads > 100:
+                raise Exception()
+
+            rpc_response = round(rpc_response_loads, 1)
+
+        else:
+            raise Exception()
+
+    except:
+
+        rpc_response = -1000.0  # Error flag
+
     blood_oxygen_level_dict = {
-        'blood_oxygen_level': float(rpc_response)
+        'blood_oxygen_level': rpc_response
     }
     return blood_oxygen_level_dict
 
@@ -88,8 +216,39 @@ def call_eletrocardiogram():
     # return {'eletrocardiogram': 95.0}
 
     rpc = RpcClient()
-    rpc_response = rpc.call('ecg').decode()
+    rpc_response = rpc.call('ecg')
     rpc.connection.close()
+
+    try:
+
+        rpc_response_decoded = rpc_response.decode()
+        rpc_response_loads = json.loads(rpc_response_decoded)
+
+        if isinstance(rpc_response_loads, list):
+
+            if len(rpc_response_loads) != 2560:
+                raise Exception()
+
+            for i in range(len(rpc_response_loads)):
+
+                if isinstance(rpc_response_loads[i], int):
+                    rpc_response_loads[i] = float(rpc_response_loads[i])
+                elif not isinstance(rpc_response_loads[i], float):
+                    raise Exception()
+
+                if rpc_response_loads[i] < 0 or rpc_response_loads[i] > 6:
+                    raise Exception()
+
+                rpc_response_loads[i] = round(rpc_response_loads[i], 6)
+
+            rpc_response = rpc_response_loads
+
+        else:
+            raise Exception()
+
+    except:
+
+        rpc_response = '-1000'  # Error flag
 
     eletrocardiogram_dict = {
         'eletrocardiogram': rpc_response

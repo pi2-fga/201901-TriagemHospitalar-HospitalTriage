@@ -33,7 +33,7 @@ class Triage(models.Model):
     previous_diagnosis = models.CharField(max_length=500,
                                           null=True,
                                           blank=True)
-    height = models.FloatField(default=1.80)
+    height = models.IntegerField(default=180)
     risk_level = models.IntegerField(
             choices=TRIAGE_RISK_CATEGORIES,
             default=RED,
